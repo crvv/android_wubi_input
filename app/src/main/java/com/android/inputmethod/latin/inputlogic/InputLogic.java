@@ -1345,8 +1345,8 @@ public final class InputLogic {
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
-        mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
-                prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+//        mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
+//                prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -2096,7 +2096,7 @@ public final class InputLogic {
                 settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
         mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
-        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
+//        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
@@ -2146,8 +2146,10 @@ public final class InputLogic {
     public void getSuggestedWords(final SettingsValues settingsValues,
             final ProximityInfo proximityInfo, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+
         mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                 getActualCapsMode(settingsValues, keyboardShiftMode));
+
         mSuggest.getSuggestedWords(mWordComposer,
                 getPrevWordsInfoFromNthPreviousWordForSuggestion(
                         settingsValues.mSpacingAndPunctuations,

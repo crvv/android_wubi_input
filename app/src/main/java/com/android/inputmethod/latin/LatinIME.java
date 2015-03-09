@@ -57,7 +57,6 @@ import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionary.DictionaryFacilitator;
 import com.android.inputmethod.dictionary.Suggest;
@@ -87,6 +86,7 @@ import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
+import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -123,9 +123,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String SCHEME_PACKAGE = "package";
 
     private final Settings mSettings;
-    private final DictionaryFacilitator mDictionaryFacilitator =
-            new DictionaryFacilitator(
-                    new DistracterFilterCheckingExactMatchesAndSuggestions(this /* context */));
+    private final DictionaryFacilitator mDictionaryFacilitator = new DictionaryFacilitator();
 
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
@@ -480,6 +478,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             richImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
         }
+    }
+
+    static {
+        JniUtils.loadNativeLibrary();
     }
 
     public LatinIME() {
