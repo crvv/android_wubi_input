@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.dictionary.Dictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 
 public class DistracterFilterCheckingIsInDictionary implements DistracterFilter {

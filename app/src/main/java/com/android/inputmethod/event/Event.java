@@ -17,7 +17,7 @@
 package com.android.inputmethod.event;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 /**

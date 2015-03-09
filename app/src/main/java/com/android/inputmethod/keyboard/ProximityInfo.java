@@ -22,7 +22,6 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,9 +83,6 @@ public class ProximityInfo {
     }
 
     private long mNativeProximityInfo;
-    static {
-        JniUtils.loadNativeLibrary();
-    }
 
     // TODO: Stop passing proximityCharsArray
     private static native long setProximityInfoNative(String locale,

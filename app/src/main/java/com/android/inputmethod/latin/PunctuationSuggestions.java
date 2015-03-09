@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.dictionary.Dictionary;
+import com.android.inputmethod.dictionary.SuggestedWords;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * The extended {@link SuggestedWords} class to represent punctuation suggestions.
+ * The extended {@link com.android.inputmethod.dictionary.SuggestedWords} class to represent punctuation suggestions.
  *
  * Each punctuation specification string is the key specification that can be parsed by
  * {@link KeySpecParser}.

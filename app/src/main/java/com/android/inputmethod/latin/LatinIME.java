@@ -59,7 +59,9 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
-import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.dictionary.DictionaryFacilitator;
+import com.android.inputmethod.dictionary.Suggest;
+import com.android.inputmethod.dictionary.SuggestedWords;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.HardwareEventDecoder;
 import com.android.inputmethod.event.HardwareKeyboardEventDecoder;
@@ -69,30 +71,22 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
-import com.android.inputmethod.keyboard.TextDecoratorUi;
-import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.android.inputmethod.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
-import com.android.inputmethod.latin.personalization.ContextualDictionaryUpdater;
-import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionaryUpdater;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
-import com.android.inputmethod.latin.suggestions.SuggestionStripView;
-import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import com.android.inputmethod.dictionary.suggestions.SuggestionStripView;
+import com.android.inputmethod.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
-import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
-import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -101,9 +95,7 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -134,17 +126,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final DictionaryFacilitator mDictionaryFacilitator =
             new DictionaryFacilitator(
                     new DistracterFilterCheckingExactMatchesAndSuggestions(this /* context */));
-    // TODO: Move from LatinIME.
-    private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
-            new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
-    private final ContextualDictionaryUpdater mContextualDictionaryUpdater =
-            new ContextualDictionaryUpdater(this /* context */, mDictionaryFacilitator,
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
-                        }
-                    });
+
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -164,13 +146,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Working variable for {@link #startShowingInputView()} and
     // {@link #onEvaluateInputViewShown()}.
     private boolean mIsExecutingStartShowingInputView;
-
-    // Object for reacting to adding/removing a dictionary pack.
-    private final BroadcastReceiver mDictionaryPackInstallReceiver =
-            new DictionaryPackInstallBroadcastReceiver(this);
-
-    private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
-            new DictionaryDumpBroadcastReceiver(this);
 
     private AlertDialog mOptionsDialog;
 
@@ -507,12 +482,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // Loading the native library eagerly to avoid unexpected UnsatisfiedLinkError at the initial
-    // JNI call as much as possible.
-    static {
-        JniUtils.loadNativeLibrary();
-    }
-
     public LatinIME() {
         super();
         mSettings = Settings.getInstance();
@@ -552,22 +521,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mConnectivityAndRingerModeChangeReceiver, filter);
 
-        final IntentFilter packageFilter = new IntentFilter();
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        packageFilter.addDataScheme(SCHEME_PACKAGE);
-        registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
-
-        final IntentFilter newDictFilter = new IntentFilter();
-        newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
-        registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
-
-        final IntentFilter dictDumpFilter = new IntentFilter();
-        dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
-        registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
-
-        DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
-
         StatsUtils.onCreate(mSettings.getCurrent());
     }
 
@@ -589,27 +542,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
-        refreshPersonalizationDictionarySession(currentSettingsValues);
         StatsUtils.onLoadSettings(currentSettingsValues);
-    }
-
-    private void refreshPersonalizationDictionarySession(
-            final SettingsValues currentSettingsValues) {
-        mPersonalizationDictionaryUpdater.onLoadSettings(
-                currentSettingsValues.mUsePersonalizedDicts,
-                mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
-        mContextualDictionaryUpdater.onLoadSettings(currentSettingsValues.mUsePersonalizedDicts);
-        final boolean shouldKeepUserHistoryDictionaries;
-        if (currentSettingsValues.mUsePersonalizedDicts) {
-            shouldKeepUserHistoryDictionaries = true;
-        } else {
-            shouldKeepUserHistoryDictionaries = false;
-        }
-        if (!shouldKeepUserHistoryDictionaries) {
-            // Remove user history dictionaries.
-            PersonalizationHelper.removeAllUserHistoryDictionaries(this);
-            mDictionaryFacilitator.clearUserHistoryDictionary();
-        }
     }
 
     // Note that this method is called from a non-UI thread.
@@ -674,20 +607,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
-        mPersonalizationDictionaryUpdater.onDestroy();
-        mContextualDictionaryUpdater.onDestroy();
         mSettings.onDestroy();
         unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
-        unregisterReceiver(mDictionaryPackInstallReceiver);
-        unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         StatsUtils.onDestroy();
         super.onDestroy();
     }
 
     @UsedForTesting
     public void recycle() {
-        unregisterReceiver(mDictionaryPackInstallReceiver);
-        unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         mInputLogic.recycle();
     }
@@ -715,10 +642,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 cleanupInternalStateForFinishInput();
             }
         }
-        // TODO: Remove this test.
-        if (!conf.locale.equals(mPersonalizationDictionaryUpdater.getLocale())) {
-            refreshPersonalizationDictionarySession(settingsValues);
-        }
+
         super.onConfigurationChanged(conf);
     }
 
@@ -735,7 +659,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
-        mInputLogic.setTextDecoratorUi(new TextDecoratorUi(this, view));
+//        mInputLogic.setTextDecoratorUi(new TextDecoratorUi(this, view));
     }
 
     @Override
@@ -778,7 +702,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+//        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
     }
 
     @Override
@@ -980,8 +904,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
-        // Contextual dictionary should be updated for the current application.
-        mContextualDictionaryUpdater.onStartInputView(editorInfo.packageName);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -1046,7 +968,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK || isFullscreenMode()) {
             return;
         }
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+//        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
     }
 
     /**
@@ -1254,24 +1176,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         return keyboard.getCoordinates(codePoints);
-    }
-
-    // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
-    // pressed.
-    @Override
-    public void addWordToUserDictionary(final String word) {
-        if (TextUtils.isEmpty(word)) {
-            // Probably never supposed to happen, but just in case.
-            return;
-        }
-        final String wordToEdit;
-        if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToEdit = word.toLowerCase(getCurrentSubtypeLocale());
-        } else {
-            wordToEdit = word;
-        }
-        mDictionaryFacilitator.addWordToUserDictionary(this /* context */, wordToEdit);
-        mInputLogic.onAddWordToUserDictionary();
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
@@ -1803,42 +1707,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /* package for test */ SuggestedWords getSuggestedWordsForTest() {
         // You may not use this method for anything else than debug
         return DEBUG ? mInputLogic.mSuggestedWords : null;
-    }
-
-    // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
-    @UsedForTesting
-    /* package for test */ void waitForLoadingDictionaries(final long timeout, final TimeUnit unit)
-            throws InterruptedException {
-        mDictionaryFacilitator.waitForLoadingDictionariesForTesting(timeout, unit);
-    }
-
-    // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
-    @UsedForTesting
-    /* package for test */ void replaceDictionariesForTest(final Locale locale) {
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(this, locale,
-            settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
-            false /* forceReloadMainDictionary */, this /* listener */);
-    }
-
-    // DO NOT USE THIS for any other purpose than testing.
-    @UsedForTesting
-    /* package for test */ void clearPersonalizedDictionariesForTest() {
-        mDictionaryFacilitator.clearUserHistoryDictionary();
-        mDictionaryFacilitator.clearPersonalizationDictionary();
-    }
-
-    @UsedForTesting
-    /* package for test */ List<InputMethodSubtype> getEnabledSubtypesForTest() {
-        return (mRichImm != null) ? mRichImm.getMyEnabledInputMethodSubtypeList(
-                true /* allowsImplicitlySelectedSubtypes */) : new ArrayList<InputMethodSubtype>();
-    }
-
-    public void dumpDictionaryForDebug(final String dictName) {
-        if (mDictionaryFacilitator.getLocale() == null) {
-            resetSuggest();
-        }
-        mDictionaryFacilitator.dumpDictionaryForDebug(dictName);
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {

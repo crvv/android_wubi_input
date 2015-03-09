@@ -20,7 +20,7 @@ import android.os.Message;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.DrawingHandler.Callbacks;
-import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.dictionary.SuggestedWords;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 // TODO: Separate this class into KeyPreviewHandler and BatchInputPreviewHandler or so.

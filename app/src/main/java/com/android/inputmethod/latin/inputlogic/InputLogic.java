@@ -37,27 +37,25 @@ import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.keyboard.TextDecorator;
-import com.android.inputmethod.keyboard.TextDecoratorUiOperator;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.DictionaryFacilitator;
+import com.android.inputmethod.dictionary.Dictionary;
+import com.android.inputmethod.dictionary.DictionaryFacilitator;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.RichInputConnection;
-import com.android.inputmethod.latin.Suggest;
-import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.dictionary.Suggest;
+import com.android.inputmethod.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.android.inputmethod.dictionary.SuggestedWords;
+import com.android.inputmethod.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import com.android.inputmethod.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
@@ -89,13 +87,13 @@ public final class InputLogic {
     public final Suggest mSuggest;
     private final DictionaryFacilitator mDictionaryFacilitator;
 
-    private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
-        @Override
-        public void onClickComposingTextToAddToDictionary(final String word) {
-            mLatinIME.addWordToUserDictionary(word);
-            mLatinIME.dismissAddToDictionaryHint();
-        }
-    });
+//    private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
+//        @Override
+//        public void onClickComposingTextToAddToDictionary(final String word) {
+//            mLatinIME.addWordToUserDictionary(word);
+//            mLatinIME.dismissAddToDictionaryHint();
+//        }
+//    });
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     // This has package visibility so it can be accessed from InputLogicHandler.
@@ -167,7 +165,7 @@ public final class InputLogic {
                 mConnection.requestCursorUpdates(true /* enableMonitor */,
                         true /* requestImmediateCallback */);
             }
-            mTextDecorator.reset();
+//            mTextDecorator.reset();
         }
     }
 
@@ -417,7 +415,7 @@ public final class InputLogic {
         // The cursor has been moved : we now accept to perform recapitalization
         mRecapitalizeStatus.enable();
         // We moved the cursor and need to invalidate the indicator right now.
-        mTextDecorator.reset();
+//        mTextDecorator.reset();
         // Remaining background color that was used for the add-to-dictionary indicator should be
         // removed.
         mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
@@ -796,7 +794,7 @@ public final class InputLogic {
             // TODO: Do we really need to check if we have composing text here?
             if (mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
                 mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
-                mTextDecorator.reset();
+//                mTextDecorator.reset();
             }
         }
 
@@ -1646,9 +1644,9 @@ public final class InputLogic {
             // the framework, show the indicator only when the separator doesn't contain
             // line-breaking characters.
             if (!StringUtils.hasLineBreakCharacter(separatorString)) {
-                mTextDecorator.showAddToDictionaryIndicator(originallyTypedWordString,
-                        mConnection.getExpectedSelectionStart(),
-                        mConnection.getExpectedSelectionEnd());
+//                mTextDecorator.showAddToDictionaryIndicator(originallyTypedWordString,
+//                        mConnection.getExpectedSelectionStart(),
+//                        mConnection.getExpectedSelectionEnd());
             }
             mSuggestionStripViewAccessor.showAddToDictionaryHint(originallyTypedWordString);
         } else {
@@ -1842,10 +1840,10 @@ public final class InputLogic {
     }
 
     /**
-     * Make a {@link com.android.inputmethod.latin.SuggestedWords} object containing a typed word
+     * Make a {@link com.android.inputmethod.dictionary.SuggestedWords} object containing a typed word
      * and obsolete suggestions.
-     * See {@link com.android.inputmethod.latin.SuggestedWords#getTypedWordAndPreviousSuggestions(
-     *      String, com.android.inputmethod.latin.SuggestedWords)}.
+     * See {@link com.android.inputmethod.dictionary.SuggestedWords#getTypedWordAndPreviousSuggestions(
+     *      String, com.android.inputmethod.dictionary.SuggestedWords)}.
      * @param typedWord The typed word as a string.
      * @param previousSuggestedWords The previously suggested words.
      * @return Obsolete suggestions with the newly typed word.
@@ -2226,25 +2224,25 @@ public final class InputLogic {
      * Sets the UI operator for {@link TextDecorator}.
      * @param uiOperator the UI operator which should be associated with {@link TextDecorator}.
      */
-    public void setTextDecoratorUi(final TextDecoratorUiOperator uiOperator) {
-        mTextDecorator.setUiOperator(uiOperator);
-    }
+//    public void setTextDecoratorUi(final TextDecoratorUiOperator uiOperator) {
+//        mTextDecorator.setUiOperator(uiOperator);
+//    }
 
     /**
      * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is
      * called.
      * @param info The wrapper object with which we can access cursor/anchor info.
      */
-    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
-        mTextDecorator.onUpdateCursorAnchorInfo(info);
-    }
+//    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
+//        mTextDecorator.onUpdateCursorAnchorInfo(info);
+//    }
 
     /**
      * Must be called when {@link InputMethodService#updateFullscreenMode} is called.
      * @param isFullscreen {@code true} if the input method is in full-screen mode.
      */
     public void onUpdateFullscreenMode(final boolean isFullscreen) {
-        mTextDecorator.notifyFullScreenMode(isFullscreen);
+//        mTextDecorator.notifyFullScreenMode(isFullscreen);
     }
 
     /**
@@ -2252,7 +2250,7 @@ public final class InputLogic {
      */
     public void onAddWordToUserDictionary() {
         mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-        mTextDecorator.reset();
+//        mTextDecorator.reset();
     }
 
     /**

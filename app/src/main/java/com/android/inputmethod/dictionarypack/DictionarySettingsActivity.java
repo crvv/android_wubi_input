@@ -44,8 +44,6 @@ public final class DictionarySettingsActivity extends PreferenceActivity {
         return modIntent;
     }
 
-    // TODO: Uncomment the override annotation once we start using SDK version 19.
-    // @Override
     public boolean isValidFragment(String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
     }

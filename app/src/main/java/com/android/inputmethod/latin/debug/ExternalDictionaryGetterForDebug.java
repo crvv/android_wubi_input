@@ -23,12 +23,8 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
-import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
-import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.utils.DialogUtils;
-import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.BufferedInputStream;
@@ -50,11 +46,11 @@ public class ExternalDictionaryGetterForDebug {
     private static String[] findDictionariesInTheDownloadedFolder() {
         final File[] files = new File(SOURCE_FOLDER).listFiles();
         final ArrayList<String> eligibleList = new ArrayList<>();
-        for (File f : files) {
-            final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
-            if (null == header) continue;
-            eligibleList.add(f.getName());
-        }
+//        for (File f : files) {
+//            final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
+//            if (null == header) continue;
+//            eligibleList.add(f.getName());
+//        }
         return eligibleList.toArray(new String[0]);
     }
 
@@ -99,91 +95,91 @@ public class ExternalDictionaryGetterForDebug {
     public static void askInstallFile(final Context context, final String dirPath,
             final String fileName, final Runnable completeRunnable) {
         final File file = new File(dirPath, fileName.toString());
-        final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
-        final StringBuilder message = new StringBuilder();
-        final String locale = header.getLocaleString();
-        for (String key : header.mDictionaryOptions.mAttributes.keySet()) {
-            message.append(key + " = " + header.mDictionaryOptions.mAttributes.get(key));
-            message.append("\n");
-        }
-        final String languageName = LocaleUtils.constructLocaleFromString(locale)
-                .getDisplayName(Locale.getDefault());
-        final String title = String.format(
-                context.getString(R.string.read_external_dictionary_confirm_install_message),
-                languageName);
-        new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
-                .setTitle(title)
-                .setMessage(message)
-                .setNegativeButton(android.R.string.cancel, new OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, final int which) {
-                        dialog.dismiss();
-                        if (completeRunnable != null) {
-                            completeRunnable.run();
-                        }
-                    }
-                }).setPositiveButton(android.R.string.ok, new OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, final int which) {
-                        installFile(context, file, header);
-                        dialog.dismiss();
-                        if (completeRunnable != null) {
-                            completeRunnable.run();
-                        }
-                    }
-                }).setOnCancelListener(new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // Canceled by the user by hitting the back key
-                        if (completeRunnable != null) {
-                            completeRunnable.run();
-                        }
-                    }
-                }).create().show();
+//        final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
+//        final StringBuilder message = new StringBuilder();
+//        final String locale = header.getLocaleString();
+//        for (String key : header.mDictionaryOptions.mAttributes.keySet()) {
+//            message.append(key + " = " + header.mDictionaryOptions.mAttributes.get(key));
+//            message.append("\n");
+//        }
+//        final String languageName = LocaleUtils.constructLocaleFromString(locale)
+//                .getDisplayName(Locale.getDefault());
+//        final String title = String.format(
+//                context.getString(R.string.read_external_dictionary_confirm_install_message),
+//                languageName);
+//        new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
+//                .setTitle(title)
+//                .setMessage(message)
+//                .setNegativeButton(android.R.string.cancel, new OnClickListener() {
+//                    @Override
+//                    public void onClick(final DialogInterface dialog, final int which) {
+//                        dialog.dismiss();
+//                        if (completeRunnable != null) {
+//                            completeRunnable.run();
+//                        }
+//                    }
+//                }).setPositiveButton(android.R.string.ok, new OnClickListener() {
+//                    @Override
+//                    public void onClick(final DialogInterface dialog, final int which) {
+//                        installFile(context, file, header);
+//                        dialog.dismiss();
+//                        if (completeRunnable != null) {
+//                            completeRunnable.run();
+//                        }
+//                    }
+//                }).setOnCancelListener(new OnCancelListener() {
+//                    @Override
+//                    public void onCancel(DialogInterface dialog) {
+//                        // Canceled by the user by hitting the back key
+//                        if (completeRunnable != null) {
+//                            completeRunnable.run();
+//                        }
+//                    }
+//                }).create().show();
     }
 
-    private static void installFile(final Context context, final File file,
-            final DictionaryHeader header) {
-        BufferedOutputStream outputStream = null;
-        File tempFile = null;
-        try {
-            final String locale = header.getLocaleString();
-            // Create the id for a main dictionary for this locale
-            final String id = BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY
-                    + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale;
-            final String finalFileName = DictionaryInfoUtils.getCacheFileName(id, locale, context);
-            final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
-            tempFile = new File(tempFileName);
-            tempFile.delete();
-            outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
-            final BufferedInputStream bufferedStream = new BufferedInputStream(
-                    new FileInputStream(file));
-            BinaryDictionaryFileDumper.checkMagicAndCopyFileTo(bufferedStream, outputStream);
-            outputStream.flush();
-            final File finalFile = new File(finalFileName);
-            finalFile.delete();
-            if (!tempFile.renameTo(finalFile)) {
-                throw new IOException("Can't move the file to its final name");
-            }
-        } catch (IOException e) {
-            // There was an error: show a dialog
-            new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
-                    .setTitle(R.string.read_external_dictionary_error)
-                    .setMessage(e.toString())
-                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                        @Override
-                        public void onClick(final DialogInterface dialog, final int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
-            return;
-        } finally {
-            try {
-                if (null != outputStream) outputStream.close();
-                if (null != tempFile) tempFile.delete();
-            } catch (IOException e) {
-                // Don't do anything
-            }
-        }
-    }
+//    private static void installFile(final Context context, final File file,
+//            final DictionaryHeader header) {
+//        BufferedOutputStream outputStream = null;
+//        File tempFile = null;
+//        try {
+//            final String locale = header.getLocaleString();
+//            // Create the id for a main dictionary for this locale
+//            final String id = BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY
+//                    + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale;
+//            final String finalFileName = DictionaryInfoUtils.getCacheFileName(id, locale, context);
+//            final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
+//            tempFile = new File(tempFileName);
+//            tempFile.delete();
+//            outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
+//            final BufferedInputStream bufferedStream = new BufferedInputStream(
+//                    new FileInputStream(file));
+//            BinaryDictionaryFileDumper.checkMagicAndCopyFileTo(bufferedStream, outputStream);
+//            outputStream.flush();
+//            final File finalFile = new File(finalFileName);
+//            finalFile.delete();
+//            if (!tempFile.renameTo(finalFile)) {
+//                throw new IOException("Can't move the file to its final name");
+//            }
+//        } catch (IOException e) {
+//            // There was an error: show a dialog
+//            new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
+//                    .setTitle(R.string.read_external_dictionary_error)
+//                    .setMessage(e.toString())
+//                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
+//                        @Override
+//                        public void onClick(final DialogInterface dialog, final int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).create().show();
+//            return;
+//        } finally {
+//            try {
+//                if (null != outputStream) outputStream.close();
+//                if (null != tempFile) tempFile.delete();
+//            } catch (IOException e) {
+//                // Don't do anything
+//            }
+//        }
+//    }
 }

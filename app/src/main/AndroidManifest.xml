@@ -103,7 +103,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
+        <receiver android:name="com.android.inputmethod.dictionary.SuggestionSpanPickedNotificationReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.text.style.SUGGESTION_PICKED" />
             </intent-filter>
