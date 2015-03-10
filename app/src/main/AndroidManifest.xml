@@ -40,16 +40,17 @@
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-            <meta-data android:name="android.view.im" android:resource="@xml/method" />
+            <meta-data android:name="android.view.im"
+                       android:resource="@xml/method" />
         </service>
 
 
         <activity android:name=".setup.SetupActivity"
-                android:theme="@style/platformActivityTheme"
-                android:label="@string/english_ime_name"
-                android:icon="@drawable/ic_launcher_keyboard"
-                android:launchMode="singleTask"
-                android:noHistory="true">
+                  android:theme="@style/platformActivityTheme"
+                  android:label="@string/english_ime_name"
+                  android:icon="@drawable/ic_launcher_keyboard"
+                  android:launchMode="singleTask"
+                  android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -57,37 +58,22 @@
         </activity>
 
         <activity android:name=".setup.SetupWizardActivity"
-                android:theme="@style/platformActivityTheme"
-                android:label="@string/english_ime_name"
-                android:clearTaskOnLaunch="true">
+                  android:theme="@style/platformActivityTheme"
+                  android:label="@string/english_ime_name"
+                  android:clearTaskOnLaunch="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
-        <receiver android:name="SystemBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_INITIALIZE" />
-                <action android:name="android.intent.action.LOCALE_CHANGED" />
-            </intent-filter>
-        </receiver>
 
         <activity android:name=".settings.SettingsActivity"
-                android:theme="@style/platformSettingsTheme"
-                android:label="@string/english_ime_settings"
-                android:uiOptions="splitActionBarWhenNarrow">
+                  android:theme="@style/platformSettingsTheme"
+                  android:label="@string/english_ime_settings"
+                  android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
-        <receiver android:name="com.android.inputmethod.dictionary.SuggestionSpanPickedNotificationReceiver" android:enabled="true">
-            <intent-filter>
-                <action android:name="android.text.style.SUGGESTION_PICKED" />
-            </intent-filter>
-        </receiver>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
                 android:theme="@style/platformSettingsTheme"

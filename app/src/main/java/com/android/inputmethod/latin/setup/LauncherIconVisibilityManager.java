@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.setup;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
@@ -27,27 +26,27 @@ import android.util.Log;
 import com.android.inputmethod.latin.settings.Settings;
 
 /**
- * This class handles the {@link Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME
+ * This class handles the {@link android.content.Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME
  * package has been replaced by a newer version of the same package. This class also handles
- * {@link Intent#ACTION_BOOT_COMPLETED} and {@link Intent#ACTION_USER_INITIALIZE} broadcast intent.
+ * {@link android.content.Intent#ACTION_BOOT_COMPLETED} and {@link android.content.Intent#ACTION_USER_INITIALIZE} broadcast intent.
  *
  * If this IME has already been installed in the system image and a new version of this IME has
- * been installed, {@link Intent#ACTION_MY_PACKAGE_REPLACED} is received to this class to hide the
+ * been installed, {@link android.content.Intent#ACTION_MY_PACKAGE_REPLACED} is received to this class to hide the
  * setup wizard's icon.
  *
  * If this IME has already been installed in the data partition and a new version of this IME has
- * been installed, {@link Intent#ACTION_MY_PACKAGE_REPLACED} is forwarded to this class but it
+ * been installed, {@link android.content.Intent#ACTION_MY_PACKAGE_REPLACED} is forwarded to this class but it
  * will not hide the setup wizard's icon, and the icon will appear on the launcher.
  *
  * If this IME hasn't been installed yet and has been newly installed, no
- * {@link Intent#ACTION_MY_PACKAGE_REPLACED} will be sent and the setup wizard's icon will appear
+ * {@link android.content.Intent#ACTION_MY_PACKAGE_REPLACED} will be sent and the setup wizard's icon will appear
  * on the launcher.
  *
- * When the device has been booted, {@link Intent#ACTION_BOOT_COMPLETED} is forwarded to this class
+ * When the device has been booted, {@link android.content.Intent#ACTION_BOOT_COMPLETED} is forwarded to this class
  * to check whether the setup wizard's icon should be appeared or not on the launcher
  * depending on which partition this IME is installed.
  *
- * When a multiuser account has been created, {@link Intent#ACTION_USER_INITIALIZE} is forwarded to
+ * When a multiuser account has been created, {@link android.content.Intent#ACTION_USER_INITIALIZE} is forwarded to
  * this class to check whether the setup wizard's icon should be appeared or not on the launcher
  * depending on which partition this IME is installed.
  */

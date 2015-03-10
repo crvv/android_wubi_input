@@ -86,7 +86,6 @@ import com.android.inputmethod.latin.utils.CursorAnchorInfoUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
-import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -480,9 +479,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    static {
-        JniUtils.loadNativeLibrary();
-    }
 
     public LatinIME() {
         super();
@@ -587,23 +583,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private void resetSuggestForLocale(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
+
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */, this);
+
         if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
                     settingsValues.mAutoCorrectionThreshold);
         }
-    }
-
-    /**
-     * Reset suggest by loading the main dictionary of the current locale.
-     */
-    /* package private */ void resetSuggestMainDict() {
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(this /* context */,
-                mDictionaryFacilitator.getLocale(), settingsValues.mUseContactsDict,
-                settingsValues.mUsePersonalizedDicts, true /* forceReloadMainDictionary */, this);
     }
 
     @Override

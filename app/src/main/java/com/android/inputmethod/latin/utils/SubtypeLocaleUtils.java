@@ -285,6 +285,7 @@ public final class SubtypeLocaleUtils {
 
     public static String getKeyboardLayoutSetName(final InputMethodSubtype subtype) {
         String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
+
         if (keyboardLayoutSet == null) {
             // This subtype doesn't have a keyboardLayoutSet extra value, so lookup its keyboard
             // layout set in sLocaleAndExtraValueToKeyboardLayoutSetMap to keep it compatible with
@@ -292,6 +293,7 @@ public final class SubtypeLocaleUtils {
             final String key = subtype.getLocale() + ":" + subtype.getExtraValue();
             keyboardLayoutSet = sLocaleAndExtraValueToKeyboardLayoutSetMap.get(key);
         }
+
         // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
         // fixed.
         if (keyboardLayoutSet == null) {

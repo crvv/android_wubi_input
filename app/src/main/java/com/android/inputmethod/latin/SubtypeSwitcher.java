@@ -280,10 +280,6 @@ public final class SubtypeSwitcher {
     }
 
     private static InputMethodSubtype sForcedSubtypeForTesting = null;
-    @UsedForTesting
-    void forceSubtype(final InputMethodSubtype subtype) {
-        sForcedSubtypeForTesting = subtype;
-    }
 
     public Locale getCurrentSubtypeLocale() {
         if (null != sForcedSubtypeForTesting) {
