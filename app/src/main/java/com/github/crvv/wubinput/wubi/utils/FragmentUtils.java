@@ -17,9 +17,6 @@
 package com.github.crvv.wubinput.wubi.utils;
 
 import com.github.crvv.wubinput.wubi.about.AboutPreferences;
-import com.github.crvv.wubinput.wubi.settings.AppearanceSettingsFragment;
-import com.github.crvv.wubinput.wubi.settings.GestureSettingsFragment;
-import com.github.crvv.wubinput.wubi.settings.MultiLingualSettingsFragment;
 import com.github.crvv.wubinput.wubi.settings.PreferencesSettingsFragment;
 import com.github.crvv.wubinput.wubi.settings.SettingsFragment;
 import com.github.crvv.wubinput.wubi.settings.ThemeSettingsFragment;
@@ -31,10 +28,7 @@ public class FragmentUtils {
     static {
         sLatinImeFragments.add(AboutPreferences.class.getName());
         sLatinImeFragments.add(PreferencesSettingsFragment.class.getName());
-        sLatinImeFragments.add(AppearanceSettingsFragment.class.getName());
         sLatinImeFragments.add(ThemeSettingsFragment.class.getName());
-        sLatinImeFragments.add(MultiLingualSettingsFragment.class.getName());
-        sLatinImeFragments.add(GestureSettingsFragment.class.getName());
         sLatinImeFragments.add(SettingsFragment.class.getName());
     }
 
