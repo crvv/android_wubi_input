@@ -34,7 +34,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.github.crvv.wubinput.compat.SettingsSecureCompatUtils;
 import com.github.crvv.wubinput.wubi.R;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.utils.InputTypeUtils;
 
 public final class AccessibilityUtils {

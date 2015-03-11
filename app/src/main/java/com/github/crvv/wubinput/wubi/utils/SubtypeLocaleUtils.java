@@ -77,7 +77,7 @@ public final class SubtypeLocaleUtils {
     // Note that this initialization method can be called multiple times.
     public static void init(final Context context) {
         synchronized (sInitializeLock) {
-            if (sInitialized == false) {
+            if (!sInitialized) {
                 initLocked(context);
                 sInitialized = true;
             }
@@ -137,7 +137,7 @@ public final class SubtypeLocaleUtils {
         return sExceptionalLocaleToNameIdsMap.containsKey(localeString);
     }
 
-    private static final String getNoLanguageLayoutKey(final String keyboardLayoutName) {
+    private static String getNoLanguageLayoutKey(final String keyboardLayoutName) {
         return NO_LANGUAGE + "_" + keyboardLayoutName;
     }
 

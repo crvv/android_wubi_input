@@ -17,7 +17,7 @@
 package com.github.crvv.wubinput.event;
 
 import com.github.crvv.wubinput.wubi.Constants;
-import com.github.crvv.wubinput.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.utils.StringUtils;
 
 /**

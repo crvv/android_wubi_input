@@ -17,25 +17,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.github.crvv.wubinput.wubi">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
 
-    <application android:label="@string/english_ime_name"
+    <application android:label="@string/ime_name"
             android:icon="@drawable/ic_launcher_keyboard"
             android:killAfterRestore="false"
             android:supportsRtl="true"
             android:allowBackup="true">
 
         <service android:name="com.github.crvv.wubinput.wubi.WubiIME"
-                android:label="@string/english_ime_name"
+                android:label="@string/ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -44,44 +35,20 @@
                        android:resource="@xml/method" />
         </service>
 
-
-        <activity android:name="com.github.crvv.wubinput.wubi.setup.SetupActivity"
-                  android:theme="@style/platformActivityTheme"
-                  android:label="@string/english_ime_name"
-                  android:icon="@drawable/ic_launcher_keyboard"
-                  android:launchMode="singleTask"
-                  android:noHistory="true">
+        <activity android:name="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
+                  android:theme="@style/platformSettingsTheme"
+                  android:label="@string/ime_name"
+                  android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.github.crvv.wubinput.wubi.setup.SetupWizardActivity"
-                  android:theme="@style/platformActivityTheme"
-                  android:label="@string/english_ime_name"
-                  android:clearTaskOnLaunch="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
-                  android:theme="@style/platformSettingsTheme"
-                  android:label="@string/english_ime_settings"
-                  android:uiOptions="splitActionBarWhenNarrow">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="com.github.crvv.wubinput.dictionarypack.DictionarySettingsActivity"
-                android:theme="@style/platformSettingsTheme"
-                android:label="@string/dictionary_settings_title"
-                android:uiOptions="splitActionBarWhenNarrow">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
+        <activity
+            android:name=".settings.TestActivity"
+            android:label="@string/title_activity_test"
+            android:parentActivityName=".settings.SettingsActivity" >
         </activity>
 
     </application>

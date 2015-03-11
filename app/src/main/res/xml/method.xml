@@ -20,7 +20,7 @@
 
 
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="com.android.inputmethod.latin.settings.SettingsActivity"
+    android:settingsActivity="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
     android:isDefault="@bool/im_is_default"
     android:supportsSwitchingToNextInputMethod="true">
 
@@ -36,22 +36,10 @@
     <subtype
         android:icon="@drawable/ic_ime_switcher_dark"
         android:label="@string/subtype_no_language_qwerty"
-        android:subtypeId="0xa239ebad"
+        android:subtypeId="200"
         android:imeSubtypeLocale="zz"
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable"
         android:isAsciiCapable="true" />
 
-    <!-- Emoji subtype has to be an addtional subtype added at boot time because ICS doesn't
-         support Emoji. -->
-    <!--
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_emoji"
-            android:subtypeId="0xc14d88b2"
-            android:imeSubtypeLocale="zz"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=emoji,EmojiCapable"
-            android:isAsciiCapable="false"
-    />
-    -->
 </input-method>

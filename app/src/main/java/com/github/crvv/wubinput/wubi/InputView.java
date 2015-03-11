@@ -25,8 +25,8 @@ import android.widget.FrameLayout;
 
 import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
 import com.github.crvv.wubinput.keyboard.MainKeyboardView;
-import com.github.crvv.wubinput.dictionary.suggestions.MoreSuggestionsView;
-import com.github.crvv.wubinput.dictionary.suggestions.SuggestionStripView;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.MoreSuggestionsView;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripView;
 
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();

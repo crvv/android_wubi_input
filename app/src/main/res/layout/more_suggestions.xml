@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
 >
-    <com.github.crvv.wubinput.dictionary.suggestions.MoreSuggestionsView
+    <com.github.crvv.wubinput.wubi.dictionary.suggestions.MoreSuggestionsView
         xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
         android:id="@+id/more_suggestions_view"
         android:layout_width="wrap_content"

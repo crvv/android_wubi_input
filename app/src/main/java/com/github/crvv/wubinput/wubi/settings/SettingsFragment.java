@@ -16,13 +16,16 @@
 
 package com.github.crvv.wubinput.wubi.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.utils.ApplicationUtils;
@@ -41,16 +44,12 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setHasOptionsMenu(true);
-        setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
+        setInputMethodSettingsCategoryTitle(R.string.select_language);
         setSubtypeEnablerTitle(R.string.select_language);
         addPreferencesFromResource(R.xml.prefs);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(
                 ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
-        if (!Settings.SHOW_MULTILINGUAL_SETTINGS) {
-            final Preference multilingualOptions = findPreference(Settings.SCREEN_MULTILINGUAL);
-            preferenceScreen.removePreference(multilingualOptions);
-        }
     }
 
     @Override
@@ -80,5 +79,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference){
+        if(preference.getTitle().equals(getResources().getString(R.string.prefs_pick_ime))){
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showInputMethodPicker();
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }

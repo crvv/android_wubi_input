@@ -44,11 +44,6 @@ public final class AdditionalSubtypeUtils {
         // This utility class is not publicly instantiable.
     }
 
-    @UsedForTesting
-    public static boolean isAdditionalSubtype(final InputMethodSubtype subtype) {
-        return subtype.containsExtraValueKey(IS_ADDITIONAL_SUBTYPE);
-    }
-
     private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
     private static final int INDEX_OF_LOCALE = 0;
     private static final int INDEX_OF_KEYBOARD_LAYOUT = 1;

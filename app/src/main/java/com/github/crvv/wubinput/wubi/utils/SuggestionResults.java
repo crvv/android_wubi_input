@@ -16,7 +16,7 @@
 
 package com.github.crvv.wubinput.wubi.utils;
 
-import com.github.crvv.wubinput.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.ProductionFlags;
 
 import java.util.ArrayList;

@@ -17,17 +17,30 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="english_ime_settings">
+
+    <Preference android:title="@string/prefs_enable_ime">
+        <intent android:action="android.settings.INPUT_METHOD_SETTINGS" />
+    </Preference>
+
+    <Preference android:title="@string/prefs_pick_ime">
+    </Preference>
+
     <PreferenceScreen
         android:fragment="com.github.crvv.wubinput.wubi.settings.PreferencesSettingsFragment"
         android:title="@string/settings_screen_preferences"
         android:key="screen_preferences" />
+
     <PreferenceScreen
-        android:fragment="com.github.crvv.wubinput.wubi.settings.AppearanceSettingsFragment"
-        android:title="@string/settings_screen_appearance"
-        android:key="screen_appearance" />
-    <PreferenceScreen
-        android:fragment="com.github.crvv.wubinput.wubi.settings.MultiLingualSettingsFragment"
-        android:title="@string/settings_screen_multilingual"
-        android:key="screen_multilingual" />
+        android:fragment="com.github.crvv.wubinput.wubi.settings.ThemeSettingsFragment"
+        android:key="screen_theme"
+        android:title="@string/settings_screen_theme" />
+
+    <Preference android:title="@string/prefs_test">
+        <intent
+            android:targetPackage="com.github.crvv.wubinput"
+            android:targetClass="com.github.crvv.wubinput.wubi.settings.TestActivity" />
+    </Preference>
+
+
 
 </PreferenceScreen>

@@ -34,7 +34,7 @@ public class RadioButtonPreference extends Preference {
          *
          * @param preference This preference.
          */
-        public void onRadioButtonClicked(RadioButtonPreference preference);
+        void onRadioButtonClicked(RadioButtonPreference preference);
     }
 
     private boolean mIsSelected;

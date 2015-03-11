@@ -36,6 +36,7 @@ import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -58,9 +59,9 @@ import android.widget.TextView;
 import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
 import com.github.crvv.wubinput.annotations.UsedForTesting;
 import com.github.crvv.wubinput.compat.InputMethodServiceCompatUtils;
-import com.github.crvv.wubinput.dictionary.DictionaryFacilitator;
-import com.github.crvv.wubinput.dictionary.Suggest;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.DictionaryFacilitator;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.event.Event;
 import com.github.crvv.wubinput.event.HardwareEventDecoder;
 import com.github.crvv.wubinput.event.HardwareKeyboardEventDecoder;
@@ -70,16 +71,16 @@ import com.github.crvv.wubinput.keyboard.KeyboardActionListener;
 import com.github.crvv.wubinput.keyboard.KeyboardId;
 import com.github.crvv.wubinput.keyboard.KeyboardSwitcher;
 import com.github.crvv.wubinput.keyboard.MainKeyboardView;
-import com.github.crvv.wubinput.dictionary.Suggest.OnGetSuggestedWordsCallback;
-import com.github.crvv.wubinput.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
 import com.github.crvv.wubinput.wubi.define.ProductionFlags;
 import com.github.crvv.wubinput.wubi.inputlogic.InputLogic;
 import com.github.crvv.wubinput.wubi.settings.Settings;
 import com.github.crvv.wubinput.wubi.settings.SettingsActivity;
 import com.github.crvv.wubinput.wubi.settings.SettingsValues;
-import com.github.crvv.wubinput.dictionary.suggestions.SuggestionStripView;
-import com.github.crvv.wubinput.dictionary.suggestions.SuggestionStripViewAccessor;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripView;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.github.crvv.wubinput.wubi.utils.ApplicationUtils;
 import com.github.crvv.wubinput.wubi.utils.CoordinateUtils;
 import com.github.crvv.wubinput.wubi.utils.CursorAnchorInfoUtils;
@@ -585,13 +586,8 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         final SettingsValues settingsValues = mSettings.getCurrent();
 
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
-                settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
+                settingsValues.mUseContactsDict, false,
                 false /* forceReloadMainDictionary */, this);
-
-        if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
-            mInputLogic.mSuggest.setAutoCorrectionThreshold(
-                    settingsValues.mAutoCorrectionThreshold);
-        }
     }
 
     @Override
@@ -642,7 +638,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
     }
 
     @Override
-    public void setInputView(final View view) {
+    public void setInputView(@NonNull final View view) {
         super.setInputView(view);
         mInputView = view;
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
@@ -653,7 +649,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
     }
 
     @Override
-    public void setExtractView(final View view) {
+    public void setExtractView(@NonNull final View view) {
         final TextView prevExtractEditText = mExtractEditText;
         super.setExtractView(view);
         TextView nextExtractEditText = null;
@@ -853,11 +849,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
             mainKeyboardView.closing();
             currentSettingsValues = mSettings.getCurrent();
 
-            if (currentSettingsValues.mAutoCorrectionEnabledPerUserSettings) {
-                suggest.setAutoCorrectionThreshold(
-                        currentSettingsValues.mAutoCorrectionThreshold);
-            }
-
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
             if (needToCallLoadKeyboardLater) {
@@ -889,10 +880,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);
         mainKeyboardView.setSlidingKeyInputPreviewEnabled(
                 currentSettingsValues.mSlidingKeyInputPreviewEnabled);
-        mainKeyboardView.setGestureHandlingEnabledByUser(
-                currentSettingsValues.mGestureInputEnabled,
-                currentSettingsValues.mGestureTrailEnabled,
-                currentSettingsValues.mGestureFloatingPreviewTextEnabled);
+        mainKeyboardView.setGestureHandlingEnabledByUser(false, false, false);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -1613,9 +1601,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                mSubtypeSwitcher.onNetworkStateChanged(intent);
-            } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
             }
         }
@@ -1640,7 +1626,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
     private void showSubtypeSelectorAndSettings() {
         final CharSequence title = getString(R.string.english_ime_input_options);
         // TODO: Should use new string "Select active input modes".
-        final CharSequence languageSelectionTitle = getString(R.string.language_selection_title);
+        final CharSequence languageSelectionTitle = getString(R.string.select_language);
         final CharSequence[] items = new CharSequence[] {
                 languageSelectionTitle,
                 getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class))
@@ -1705,22 +1691,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         s.append("\nAttributes : ").append(settingsValues.mInputAttributes)
                 .append("\nContext : ").append(context);
         throw new RuntimeException(s.toString());
-    }
-
-    @Override
-    protected void dump(final FileDescriptor fd, final PrintWriter fout, final String[] args) {
-        super.dump(fd, fout, args);
-
-        final Printer p = new PrintWriterPrinter(fout);
-        p.println("LatinIME state :");
-        p.println("  VersionCode = " + ApplicationUtils.getVersionCode(this));
-        p.println("  VersionName = " + ApplicationUtils.getVersionName(this));
-        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-        final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
-        p.println("  Keyboard mode = " + keyboardMode);
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        p.println(settingsValues.dump());
-        // TODO: Dump all settings values
     }
 
     public boolean shouldSwitchToOtherInputMethods() {

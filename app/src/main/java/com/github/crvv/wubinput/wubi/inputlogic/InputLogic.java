@@ -37,24 +37,24 @@ import com.github.crvv.wubinput.event.InputTransaction;
 import com.github.crvv.wubinput.keyboard.KeyboardSwitcher;
 import com.github.crvv.wubinput.keyboard.ProximityInfo;
 import com.github.crvv.wubinput.wubi.Constants;
-import com.github.crvv.wubinput.dictionary.Dictionary;
-import com.github.crvv.wubinput.dictionary.DictionaryFacilitator;
+import com.github.crvv.wubinput.wubi.dictionary.Dictionary;
+import com.github.crvv.wubinput.wubi.dictionary.DictionaryFacilitator;
 import com.github.crvv.wubinput.wubi.InputPointers;
 import com.github.crvv.wubinput.wubi.LastComposedWord;
 import com.github.crvv.wubinput.wubi.WubiIME;
 import com.github.crvv.wubinput.wubi.PrevWordsInfo;
 import com.github.crvv.wubinput.wubi.RichInputConnection;
-import com.github.crvv.wubinput.dictionary.Suggest;
-import com.github.crvv.wubinput.dictionary.Suggest.OnGetSuggestedWordsCallback;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
-import com.github.crvv.wubinput.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.WordComposer;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
 import com.github.crvv.wubinput.wubi.define.ProductionFlags;
 import com.github.crvv.wubinput.wubi.settings.SettingsValues;
 import com.github.crvv.wubinput.wubi.settings.SettingsValuesForSuggestion;
 import com.github.crvv.wubinput.wubi.settings.SpacingAndPunctuations;
-import com.github.crvv.wubinput.dictionary.suggestions.SuggestionStripViewAccessor;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.github.crvv.wubinput.wubi.utils.AsyncResultHolder;
 import com.github.crvv.wubinput.wubi.utils.InputTypeUtils;
 import com.github.crvv.wubinput.wubi.utils.RecapitalizeStatus;
@@ -85,14 +85,6 @@ public final class InputLogic {
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     public final Suggest mSuggest;
     private final DictionaryFacilitator mDictionaryFacilitator;
-
-//    private final TextDecorator mTextDecorator = new TextDecorator(new TextDecorator.Listener() {
-//        @Override
-//        public void onClickComposingTextToAddToDictionary(final String word) {
-//            mLatinIME.addWordToUserDictionary(word);
-//            mLatinIME.dismissAddToDictionaryHint();
-//        }
-//    });
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     // This has package visibility so it can be accessed from InputLogicHandler.
@@ -918,15 +910,7 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
-                final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
-                        : StringUtils.newSingleCodePointString(codePoint);
-                commitCurrentAutoCorrection(settingsValues, separator, handler);
-                inputTransaction.setDidAutoCorrect();
-            } else {
-                commitTyped(settingsValues,
-                        StringUtils.newSingleCodePointString(codePoint));
-            }
+            commitTyped(settingsValues,StringUtils.newSingleCodePointString(codePoint));
         }
 
         final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
@@ -1330,22 +1314,6 @@ public final class InputLogic {
         mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
         mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
                 mRecapitalizeStatus.getNewCursorEnd());
-    }
-
-    private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion, final PrevWordsInfo prevWordsInfo) {
-        // If correction is not enabled, we don't add words to the user history dictionary.
-        // That's to avoid unintended additions in some sensitive fields, or fields that
-        // expect to receive non-words.
-        if (!settingsValues.mAutoCorrectionEnabledPerUserSettings) return;
-
-        if (TextUtils.isEmpty(suggestion)) return;
-        final boolean wasAutoCapitalized =
-                mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
-        final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
-                System.currentTimeMillis());
-//        mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
-//                prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -1839,10 +1807,10 @@ public final class InputLogic {
     }
 
     /**
-     * Make a {@link com.github.crvv.wubinput.dictionary.SuggestedWords} object containing a typed word
+     * Make a {@link com.github.crvv.wubinput.wubi.dictionary.SuggestedWords} object containing a typed word
      * and obsolete suggestions.
-     * See {@link com.github.crvv.wubinput.dictionary.SuggestedWords#getTypedWordAndPreviousSuggestions(
-     *      String, com.github.crvv.wubinput.dictionary.SuggestedWords)}.
+     * See {@link com.github.crvv.wubinput.wubi.dictionary.SuggestedWords#getTypedWordAndPreviousSuggestions(
+     *      String, com.github.crvv.wubinput.wubi.dictionary.SuggestedWords)}.
      * @param typedWord The typed word as a string.
      * @param previousSuggestedWords The previously suggested words.
      * @return Obsolete suggestions with the newly typed word.
@@ -2160,7 +2128,7 @@ public final class InputLogic {
                 new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
                         settingsValues.mPhraseGestureEnabled,
                         settingsValues.mAdditionalFeaturesSettingValues),
-                settingsValues.mAutoCorrectionEnabledPerUserSettings,
+                false,
                 inputStyle, sequenceNumber, callback);
     }
 
@@ -2244,14 +2212,6 @@ public final class InputLogic {
      */
     public void onUpdateFullscreenMode(final boolean isFullscreen) {
 //        mTextDecorator.notifyFullScreenMode(isFullscreen);
-    }
-
-    /**
-     * Must be called from {@link WubiIME#addWordToUserDictionary(String)}.
-     */
-    public void onAddWordToUserDictionary() {
-        mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
-//        mTextDecorator.reset();
     }
 
     /**

@@ -65,14 +65,10 @@ public final class SettingsValues {
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
     public final boolean mUseContactsDict;
-    public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
     public final boolean mBlockPotentiallyOffensive;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
-    public final boolean mGestureInputEnabled;
-    public final boolean mGestureTrailEnabled;
-    public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
     public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
@@ -86,9 +82,7 @@ public final class SettingsValues {
     public final int mKeypressVibrationDuration;
     public final float mKeypressSoundVolume;
     public final int mKeyPreviewPopupDismissDelay;
-    private final boolean mAutoCorrectEnabled;
-    public final float mAutoCorrectionThreshold;
-    public final boolean mAutoCorrectionEnabledPerUserSettings;
+    private final boolean mAutoCorrectEnabled = false;
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -134,20 +128,15 @@ public final class SettingsValues {
         mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res)
                 && mInputAttributes.mShouldShowVoiceInputKey
                 && SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        final String autoCorrectionThresholdRawValue = prefs.getString(
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                res.getString(R.string.auto_correction_threshold_mode_index_modest));
         mIncludesOtherImesInLanguageSwitchList = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
         mShowsLanguageSwitchKey = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
-        mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
                 && inputAttributes.mIsGeneralTextInput;
         mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res);
-        mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
@@ -158,15 +147,7 @@ public final class SettingsValues {
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
-        mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
-                autoCorrectionThresholdRawValue);
-        mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
-        mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
-        mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
-                Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mPhraseGestureEnabled = Settings.readPhraseGestureEnabled(prefs, res);
-        mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
-                && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
@@ -201,8 +182,7 @@ public final class SettingsValues {
     }
 
     public boolean needsToLookupSuggestions() {
-        return mInputAttributes.mShouldShowSuggestions
-                && (mAutoCorrectionEnabledPerUserSettings || isSuggestionsEnabledPerUserSettings());
+        return mInputAttributes.mShouldShowSuggestions && (isSuggestionsEnabledPerUserSettings());
     }
 
     public boolean isSuggestionsEnabledPerUserSettings() {
@@ -286,138 +266,8 @@ public final class SettingsValues {
                 R.bool.config_default_next_word_prediction));
     }
 
-    private static float readAutoCorrectionThreshold(final Resources res,
-            final String currentAutoCorrectionSetting) {
-        final String[] autoCorrectionThresholdValues = res.getStringArray(
-                R.array.auto_correction_threshold_values);
-        // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
-        final float autoCorrectionThreshold;
-        try {
-            final int arrayIndex = Integer.parseInt(currentAutoCorrectionSetting);
-            if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
-                final String val = autoCorrectionThresholdValues[arrayIndex];
-                if (FLOAT_MAX_VALUE_MARKER_STRING.equals(val)) {
-                    autoCorrectionThreshold = Float.MAX_VALUE;
-                } else if (FLOAT_NEGATIVE_INFINITY_MARKER_STRING.equals(val)) {
-                    autoCorrectionThreshold = Float.NEGATIVE_INFINITY;
-                } else {
-                    autoCorrectionThreshold = Float.parseFloat(val);
-                }
-            } else {
-                autoCorrectionThreshold = Float.MAX_VALUE;
-            }
-        } catch (final NumberFormatException e) {
-            // Whenever the threshold settings are correct, never come here.
-            Log.w(TAG, "Cannot load auto correction threshold setting."
-                    + " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting
-                    + ", autoCorrectionThresholdValues: "
-                    + Arrays.toString(autoCorrectionThresholdValues), e);
-            return Float.MAX_VALUE;
-        }
-        return autoCorrectionThreshold;
-    }
-
     private static boolean needsToShowVoiceInputKey(final SharedPreferences prefs,
             final Resources res) {
-        // Migrate preference from {@link Settings#PREF_VOICE_MODE_OBSOLETE} to
-        // {@link Settings#PREF_VOICE_INPUT_KEY}.
-        if (prefs.contains(Settings.PREF_VOICE_MODE_OBSOLETE)) {
-            final String voiceModeMain = res.getString(R.string.voice_mode_main);
-            final String voiceMode = prefs.getString(
-                    Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain);
-            final boolean shouldShowVoiceInputKey = voiceModeMain.equals(voiceMode);
-            prefs.edit()
-                    .putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey)
-                    // Remove the obsolete preference if exists.
-                    .remove(Settings.PREF_VOICE_MODE_OBSOLETE)
-                    .apply();
-        }
-        return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, true);
-    }
-
-    public String dump() {
-        final StringBuilder sb = new StringBuilder("Current settings :");
-        sb.append("\n   mSpacingAndPunctuations = ");
-        sb.append("" + mSpacingAndPunctuations.dump());
-        sb.append("\n   mDelayInMillisecondsToUpdateOldSuggestions = ");
-        sb.append("" + mDelayInMillisecondsToUpdateOldSuggestions);
-        sb.append("\n   mAutoCap = ");
-        sb.append("" + mAutoCap);
-        sb.append("\n   mVibrateOn = ");
-        sb.append("" + mVibrateOn);
-        sb.append("\n   mSoundOn = ");
-        sb.append("" + mSoundOn);
-        sb.append("\n   mKeyPreviewPopupOn = ");
-        sb.append("" + mKeyPreviewPopupOn);
-        sb.append("\n   mShowsVoiceInputKey = ");
-        sb.append("" + mShowsVoiceInputKey);
-        sb.append("\n   mIncludesOtherImesInLanguageSwitchList = ");
-        sb.append("" + mIncludesOtherImesInLanguageSwitchList);
-        sb.append("\n   mShowsLanguageSwitchKey = ");
-        sb.append("" + mShowsLanguageSwitchKey);
-        sb.append("\n   mUseContactsDict = ");
-        sb.append("" + mUseContactsDict);
-        sb.append("\n   mUsePersonalizedDicts = ");
-        sb.append("" + mUsePersonalizedDicts);
-        sb.append("\n   mUseDoubleSpacePeriod = ");
-        sb.append("" + mUseDoubleSpacePeriod);
-        sb.append("\n   mBlockPotentiallyOffensive = ");
-        sb.append("" + mBlockPotentiallyOffensive);
-        sb.append("\n   mBigramPredictionEnabled = ");
-        sb.append("" + mBigramPredictionEnabled);
-        sb.append("\n   mGestureInputEnabled = ");
-        sb.append("" + mGestureInputEnabled);
-        sb.append("\n   mGestureTrailEnabled = ");
-        sb.append("" + mGestureTrailEnabled);
-        sb.append("\n   mGestureFloatingPreviewTextEnabled = ");
-        sb.append("" + mGestureFloatingPreviewTextEnabled);
-        sb.append("\n   mSlidingKeyInputPreviewEnabled = ");
-        sb.append("" + mSlidingKeyInputPreviewEnabled);
-        sb.append("\n   mPhraseGestureEnabled = ");
-        sb.append("" + mPhraseGestureEnabled);
-        sb.append("\n   mKeyLongpressTimeout = ");
-        sb.append("" + mKeyLongpressTimeout);
-        sb.append("\n   mLocale = ");
-        sb.append("" + mLocale);
-        sb.append("\n   mInputAttributes = ");
-        sb.append("" + mInputAttributes);
-        sb.append("\n   mKeypressVibrationDuration = ");
-        sb.append("" + mKeypressVibrationDuration);
-        sb.append("\n   mKeypressSoundVolume = ");
-        sb.append("" + mKeypressSoundVolume);
-        sb.append("\n   mKeyPreviewPopupDismissDelay = ");
-        sb.append("" + mKeyPreviewPopupDismissDelay);
-        sb.append("\n   mAutoCorrectEnabled = ");
-        sb.append("" + mAutoCorrectEnabled);
-        sb.append("\n   mAutoCorrectionThreshold = ");
-        sb.append("" + mAutoCorrectionThreshold);
-        sb.append("\n   mAutoCorrectionEnabledPerUserSettings = ");
-        sb.append("" + mAutoCorrectionEnabledPerUserSettings);
-        sb.append("\n   mSuggestionsEnabledPerUserSettings = ");
-        sb.append("" + mSuggestionsEnabledPerUserSettings);
-        sb.append("\n   mDisplayOrientation = ");
-        sb.append("" + mDisplayOrientation);
-        sb.append("\n   mAppWorkarounds = ");
-        final AppWorkaroundsUtils awu = mAppWorkarounds.get(null, 0);
-        sb.append("" + (null == awu ? "null" : awu.toString()));
-        sb.append("\n   mAdditionalFeaturesSettingValues = ");
-        sb.append("" + Arrays.toString(mAdditionalFeaturesSettingValues));
-        sb.append("\n   mTextHighlightColorForAddToDictionaryIndicator = ");
-        sb.append("" + mTextHighlightColorForAddToDictionaryIndicator);
-        sb.append("\n   mIsInternal = ");
-        sb.append("" + mIsInternal);
-        sb.append("\n   mKeyPreviewShowUpDuration = ");
-        sb.append("" + mKeyPreviewShowUpDuration);
-        sb.append("\n   mKeyPreviewDismissDuration = ");
-        sb.append("" + mKeyPreviewDismissDuration);
-        sb.append("\n   mKeyPreviewShowUpStartScaleX = ");
-        sb.append("" + mKeyPreviewShowUpStartXScale);
-        sb.append("\n   mKeyPreviewShowUpStartScaleY = ");
-        sb.append("" + mKeyPreviewShowUpStartYScale);
-        sb.append("\n   mKeyPreviewDismissEndScaleX = ");
-        sb.append("" + mKeyPreviewDismissEndXScale);
-        sb.append("\n   mKeyPreviewDismissEndScaleY = ");
-        sb.append("" + mKeyPreviewDismissEndYScale);
-        return sb.toString();
+        return false;
     }
 }

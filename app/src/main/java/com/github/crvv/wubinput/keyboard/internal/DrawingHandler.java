@@ -20,7 +20,7 @@ import android.os.Message;
 
 import com.github.crvv.wubinput.keyboard.Key;
 import com.github.crvv.wubinput.keyboard.internal.DrawingHandler.Callbacks;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.utils.LeakGuardHandlerWrapper;
 
 // TODO: Separate this class into KeyPreviewHandler and BatchInputPreviewHandler or so.

@@ -23,8 +23,8 @@ import android.os.Message;
 import com.github.crvv.wubinput.compat.LooperCompatUtils;
 import com.github.crvv.wubinput.wubi.InputPointers;
 import com.github.crvv.wubinput.wubi.WubiIME;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
-import com.github.crvv.wubinput.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest.OnGetSuggestedWordsCallback;
 
 /**
  * A helper to manage deferred tasks for the input logic.

@@ -23,10 +23,10 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
-import com.github.crvv.wubinput.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
-import com.github.crvv.wubinput.dictionary.SuggestionSpanPickedNotificationReceiver;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestionSpanPickedNotificationReceiver;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

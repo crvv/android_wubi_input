@@ -26,7 +26,7 @@ import android.text.TextUtils;
 
 import com.github.crvv.wubinput.keyboard.PointerTracker;
 import com.github.crvv.wubinput.wubi.R;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.utils.CoordinateUtils;
 
 /**

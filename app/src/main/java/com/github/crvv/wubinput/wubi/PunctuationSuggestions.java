@@ -16,8 +16,8 @@
 
 package com.github.crvv.wubinput.wubi;
 
-import com.github.crvv.wubinput.dictionary.Dictionary;
-import com.github.crvv.wubinput.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.Dictionary;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.keyboard.internal.KeySpecParser;
 import com.github.crvv.wubinput.wubi.utils.StringUtils;
 
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * The extended {@link com.github.crvv.wubinput.dictionary.SuggestedWords} class to represent punctuation suggestions.
+ * The extended {@link com.github.crvv.wubinput.wubi.dictionary.SuggestedWords} class to represent punctuation suggestions.
  *
  * Each punctuation specification string is the key specification that can be parsed by
  * {@link KeySpecParser}.

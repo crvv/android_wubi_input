@@ -87,16 +87,6 @@ public final class RichInputMethodManager {
 
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
-        final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes(context);
-        setAdditionalInputMethodSubtypes(additionalSubtypes);
-    }
-
-    public InputMethodSubtype[] getAdditionalSubtypes(final Context context) {
-        SubtypeLocaleUtils.init(context);
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
-                prefs, context.getResources());
-        return AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
     }
 
     public InputMethodManager getInputMethodManager() {
@@ -381,14 +371,6 @@ public final class RichInputMethodManager {
     public void setInputMethodAndSubtype(final IBinder token, final InputMethodSubtype subtype) {
         mImmWrapper.mImm.setInputMethodAndSubtype(
                 token, getInputMethodIdOfThisIme(), subtype);
-    }
-
-    public void setAdditionalInputMethodSubtypes(final InputMethodSubtype[] subtypes) {
-        mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
-                getInputMethodIdOfThisIme(), subtypes);
-        // Clear the cache so that we go read the {@link InputMethodInfo} of this IME and list of
-        // subtypes again next time.
-        clearSubtypeCaches();
     }
 
     private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(final InputMethodInfo imi,

@@ -19,10 +19,12 @@ package com.github.crvv.wubinput.wubi.settings;
 import com.github.crvv.wubinput.wubi.utils.FragmentUtils;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 public final class SettingsActivity extends PreferenceActivity {
     public static final String EXTRA_SHOW_HOME_AS_UP = "show_home_as_up";
@@ -64,4 +66,5 @@ public final class SettingsActivity extends PreferenceActivity {
     public boolean isValidFragment(final String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
     }
+
 }

@@ -16,14 +16,9 @@
 
 package com.github.crvv.wubinput.wubi;
 
-import static com.github.crvv.wubinput.wubi.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
@@ -32,17 +27,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.github.crvv.wubinput.compat.InputMethodSubtypeCompatUtils;
-import com.github.crvv.wubinput.keyboard.KeyboardSwitcher;
 import com.github.crvv.wubinput.keyboard.internal.LanguageOnSpacebarHelper;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
 import com.github.crvv.wubinput.wubi.utils.LocaleUtils;
 import com.github.crvv.wubinput.wubi.utils.SubtypeLocaleUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 public final class SubtypeSwitcher {
     private static boolean DBG = DebugFlags.DEBUG_ENABLED;
@@ -59,7 +51,6 @@ public final class SubtypeSwitcher {
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
     private InputMethodSubtype mEmojiSubtype;
-    private boolean mIsNetworkConnected;
 
     private static final String KEYBOARD_MODE = "keyboard";
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
@@ -110,11 +101,6 @@ public final class SubtypeSwitcher {
         }
         mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-
-        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        mIsNetworkConnected = (info != null && info.isConnected());
 
         onSubtypeChanged(getCurrentSubtype());
         updateParametersOnStartInputView();
@@ -231,18 +217,7 @@ public final class SubtypeSwitcher {
         if (mShortcutSubtype == null) {
             return true;
         }
-        if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
-            return mIsNetworkConnected;
-        }
         return true;
-    }
-
-    public void onNetworkStateChanged(final Intent intent) {
-        final boolean noConnection = intent.getBooleanExtra(
-                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-        mIsNetworkConnected = !noConnection;
-
-        KeyboardSwitcher.getInstance().onNetworkStateChanged();
     }
 
     //////////////////////////////////
@@ -251,31 +226,6 @@ public final class SubtypeSwitcher {
 
     public int getLanguageOnSpacebarFormatType(final InputMethodSubtype subtype) {
         return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);
-    }
-
-    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {
-        final Locale systemLocale = mResources.getConfiguration().locale;
-        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes = new HashSet<>();
-        final InputMethodManager inputMethodManager = mRichImm.getInputMethodManager();
-        final List<InputMethodInfo> enabledInputMethodInfoList =
-                inputMethodManager.getEnabledInputMethodList();
-        for (final InputMethodInfo info : enabledInputMethodInfoList) {
-            final List<InputMethodSubtype> enabledSubtypes =
-                    inputMethodManager.getEnabledInputMethodSubtypeList(
-                            info, true /* allowsImplicitlySelectedSubtypes */);
-            if (enabledSubtypes.isEmpty()) {
-                // An IME with no subtypes is found.
-                return false;
-            }
-            enabledSubtypesOfEnabledImes.addAll(enabledSubtypes);
-        }
-        for (final InputMethodSubtype subtype : enabledSubtypesOfEnabledImes) {
-            if (!subtype.isAuxiliary() && !subtype.getLocale().isEmpty()
-                    && !systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static InputMethodSubtype sForcedSubtypeForTesting = null;
