@@ -19,9 +19,9 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Key
-        latin:keyStyle="spaceKeyStyle"
-        latin:keyWidth="30%p" />
+        app:keyStyle="spaceKeyStyle"
+        app:keyWidth="30%p" />
 </merge>

@@ -19,22 +19,22 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Row
-        latin:keyWidth="10%p"
+        app:keyWidth="10%p"
     >
         <Key
-            latin:keyStyle="toSymbolKeyStyle"
-            latin:keyWidth="15%p" />
+            app:keyStyle="toSymbolKeyStyle"
+            app:keyWidth="15%p" />
         <include
-            latin:keyboardLayout="@xml/key_space_5kw" />
+            app:keyboardLayout="@xml/key_space_5kw" />
         <include
-            latin:keyboardLayout="@xml/key_comma" />
+            app:keyboardLayout="@xml/key_comma" />
         <include
-            latin:keyboardLayout="@xml/key_period" />
+            app:keyboardLayout="@xml/key_period" />
         <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="enterKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
 </merge>

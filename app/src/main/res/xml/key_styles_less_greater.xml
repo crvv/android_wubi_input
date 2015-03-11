@@ -19,36 +19,36 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <!-- The less and greater keys' style which may have different label depending on locale. -->
     <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
     <switch>
         <case
-            latin:languageCode="fa"
+            app:languageCode="fa"
         >
             <key-style
-                latin:styleName="lessKeyStyle"
-                latin:keySpec="!text/keyspec_left_double_angle_quote"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/morekeys_less_than" />
+                app:styleName="lessKeyStyle"
+                app:keySpec="!text/keyspec_left_double_angle_quote"
+                app:backgroundType="functional"
+                app:moreKeys="!text/morekeys_less_than" />
             <key-style
-                latin:styleName="greaterKeyStyle"
-                latin:keySpec="!text/keyspec_right_double_angle_quote"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/morekeys_greater_than" />
+                app:styleName="greaterKeyStyle"
+                app:keySpec="!text/keyspec_right_double_angle_quote"
+                app:backgroundType="functional"
+                app:moreKeys="!text/morekeys_greater_than" />
         </case>
         <default>
             <key-style
-                latin:styleName="lessKeyStyle"
-                latin:keySpec="!text/keyspec_less_than"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/morekeys_less_than" />
+                app:styleName="lessKeyStyle"
+                app:keySpec="!text/keyspec_less_than"
+                app:backgroundType="functional"
+                app:moreKeys="!text/morekeys_less_than" />
             <key-style
-                latin:styleName="greaterKeyStyle"
-                latin:keySpec="!text/keyspec_greater_than"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/morekeys_greater_than" />
+                app:styleName="greaterKeyStyle"
+                app:keySpec="!text/keyspec_greater_than"
+                app:backgroundType="functional"
+                app:moreKeys="!text/morekeys_greater_than" />
         </default>
     </switch>
 </merge>

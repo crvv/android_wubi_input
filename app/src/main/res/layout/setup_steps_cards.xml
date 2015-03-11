@@ -38,7 +38,7 @@
             style="@style/setupStepBulletStyle"
             android:text="@string/setup_step3_bullet" />
     </LinearLayout>
-    <com.android.inputmethod.latin.setup.SetupStepIndicatorView
+    <com.github.crvv.wubinput.wubi.setup.SetupStepIndicatorView
         android:id="@+id/setup_step_indicator"
         style="@style/setupStepIndicatorStyle" />
     <FrameLayout

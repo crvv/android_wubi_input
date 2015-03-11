@@ -19,14 +19,14 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="@fraction/config_emoji_keyboard_key_width"
-    latin:keyLetterSize="@fraction/config_emoji_keyboard_key_letter_size"
-    latin:keyLabelSize="60%p"
-    latin:rowHeight="@fraction/config_emoji_keyboard_row_height"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
+    app:keyWidth="@fraction/config_emoji_keyboard_key_width"
+    app:keyLetterSize="@fraction/config_emoji_keyboard_key_letter_size"
+    app:keyLabelSize="60%p"
+    app:rowHeight="@fraction/config_emoji_keyboard_row_height"
 >
     <GridRows
-        latin:codesArray="@array/emoji_recents"
-        latin:keyLabelFlags="fontNormal"
-        latin:backgroundType="empty" />
+        app:codesArray="@array/emoji_recents"
+        app:keyLabelFlags="fontNormal"
+        app:backgroundType="empty" />
 </Keyboard>

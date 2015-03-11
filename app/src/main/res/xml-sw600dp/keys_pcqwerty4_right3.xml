@@ -19,28 +19,28 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+            app:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
         >
             <Key
-                latin:keySpec=","
-                latin:keyHintLabel="&lt;"
-                latin:additionalMoreKeys="&lt;"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                app:keySpec=","
+                app:keyHintLabel="&lt;"
+                app:additionalMoreKeys="&lt;"
+                app:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keySpec="."
-                latin:keyHintLabel="&gt;"
-                latin:additionalMoreKeys="&gt;"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                app:keySpec="."
+                app:keyHintLabel="&gt;"
+                app:additionalMoreKeys="&gt;"
+                app:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keySpec="/"
-                latin:keyHintLabel="\?"
-                latin:additionalMoreKeys="\?"
-                latin:keyStyle="hasShiftedLetterHintStyle"
-                latin:moreKeys="!text/morekeys_question" />
+                app:keySpec="/"
+                app:keyHintLabel="\?"
+                app:additionalMoreKeys="\?"
+                app:keyStyle="hasShiftedLetterHintStyle"
+                app:moreKeys="!text/morekeys_question" />
         </case>
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
@@ -51,14 +51,14 @@
                  U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                  U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
             <Key
-                latin:keySpec="&lt;"
-                latin:moreKeys="!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;" />
+                app:keySpec="&lt;"
+                app:moreKeys="!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;" />
             <Key
-                latin:keySpec="&gt;"
-                latin:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;" />
+                app:keySpec="&gt;"
+                app:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;" />
             <Key
-                latin:keySpec="\?"
-                latin:moreKeys="!text/morekeys_question" />
+                app:keySpec="\?"
+                app:moreKeys="!text/morekeys_question" />
         </default>
     </switch>
 </merge>

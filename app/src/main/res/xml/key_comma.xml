@@ -19,37 +19,37 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:keyboardLayoutSet="dvorak"
+            app:keyboardLayoutSet="dvorak"
         >
             <Key
-                latin:keySpec="q"
-                latin:moreKeys="!text/morekeys_q,%"
-                latin:backgroundType="normal"
-                latin:keyStyle="settingsMoreKeysStyle" />
+                app:keySpec="q"
+                app:moreKeys="!text/morekeys_q,%"
+                app:backgroundType="normal"
+                app:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case
-            latin:mode="url"
+            app:mode="url"
         >
             <Key
-                latin:keySpec="/"
-                latin:keyStyle="settingsMoreKeysStyle" />
+                app:keySpec="/"
+                app:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case
-            latin:mode="email"
+            app:mode="email"
         >
             <Key
-                latin:keySpec="\@"
-                latin:keyStyle="settingsMoreKeysStyle" />
+                app:keySpec="\@"
+                app:keyStyle="settingsMoreKeysStyle" />
         </case>
         <default>
             <Key
-                latin:keySpec="!text/keyspec_comma"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:keyStyle="settingsMoreKeysStyle" />
+                app:keySpec="!text/keyspec_comma"
+                app:keyLabelFlags="hasPopupHint"
+                app:keyStyle="settingsMoreKeysStyle" />
         </default>
     </switch>
 </merge>

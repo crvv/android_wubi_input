@@ -16,38 +16,27 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
     android:title="@string/settings_screen_preferences">
-    <CheckBoxPreference
-        android:key="auto_cap"
-        android:title="@string/auto_cap"
-        android:summary="@string/auto_cap_summary"
-        android:defaultValue="true"
-        android:persistent="true" />
-    <CheckBoxPreference
-        android:key="pref_key_use_double_space_period"
-        android:title="@string/use_double_space_period"
-        android:summary="@string/use_double_space_period_summary"
-        android:defaultValue="true"
-        android:persistent="true" />
+
+
     <CheckBoxPreference
         android:key="vibrate_on"
         android:title="@string/vibrate_on_keypress"
         android:defaultValue="@bool/config_default_vibration_enabled"
         android:persistent="true" />
+    <com.github.crvv.wubinput.wubi.settings.SeekBarDialogPreference
+        android:key="pref_vibration_duration_settings"
+        android:title="@string/prefs_keypress_vibration_duration_settings"
+        app:maxValue="@integer/config_max_vibration_duration" />
     <CheckBoxPreference
         android:key="sound_on"
         android:title="@string/sound_on_keypress"
         android:defaultValue="@bool/config_default_sound_enabled"
         android:persistent="true" />
-    <CheckBoxPreference
-        android:key="popup_on"
-        android:title="@string/popup_on_keypress"
-        android:defaultValue="@bool/config_default_key_preview_popup"
-        android:persistent="true" />
-    <CheckBoxPreference
-        android:key="pref_voice_input_key"
-        android:title="@string/voice_input"
-        android:defaultValue="true"
-        android:persistent="true" />
+    <com.github.crvv.wubinput.wubi.settings.SeekBarDialogPreference
+        android:key="pref_keypress_sound_volume"
+        android:title="@string/prefs_keypress_sound_volume_settings"
+        app:maxValue="100" /> <!-- percent -->
+
 </PreferenceScreen>

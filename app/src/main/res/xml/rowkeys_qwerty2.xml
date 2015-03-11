@@ -19,32 +19,32 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Key
-        latin:keySpec="a"
-        latin:moreKeys="!text/morekeys_a" />
+        app:keySpec="a"
+        app:moreKeys="!text/morekeys_a" />
     <Key
-        latin:keySpec="s"
-        latin:moreKeys="!text/morekeys_s" />
+        app:keySpec="s"
+        app:moreKeys="!text/morekeys_s" />
     <Key
-        latin:keySpec="d"
-        latin:moreKeys="!text/morekeys_d" />
+        app:keySpec="d"
+        app:moreKeys="!text/morekeys_d" />
     <Key
-        latin:keySpec="f" />
+        app:keySpec="f" />
     <Key
-        latin:keySpec="g"
-        latin:moreKeys="!text/morekeys_g" />
+        app:keySpec="g"
+        app:moreKeys="!text/morekeys_g" />
     <Key
-        latin:keySpec="h"
-        latin:moreKeys="!text/morekeys_h" />
+        app:keySpec="h"
+        app:moreKeys="!text/morekeys_h" />
     <Key
-        latin:keySpec="j"
-        latin:moreKeys="!text/morekeys_j" />
+        app:keySpec="j"
+        app:moreKeys="!text/morekeys_j" />
     <Key
-        latin:keySpec="k"
-        latin:moreKeys="!text/morekeys_k" />
+        app:keySpec="k"
+        app:moreKeys="!text/morekeys_k" />
     <Key
-        latin:keySpec="l"
-        latin:moreKeys="!text/morekeys_l" />
+        app:keySpec="l"
+        app:moreKeys="!text/morekeys_l" />
 </merge>

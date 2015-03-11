@@ -19,26 +19,26 @@
 -->
 
 <KeyboardLayoutSet
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput">
     <Element
-        latin:elementName="emojiRecents"
-        latin:elementKeyboard="@xml/kbd_emoji_recents" />
+        app:elementName="emojiRecents"
+        app:elementKeyboard="@xml/kbd_emoji_recents" />
     <Element
-        latin:elementName="emojiCategory1"
-        latin:elementKeyboard="@xml/kbd_emoji_category1" />
+        app:elementName="emojiCategory1"
+        app:elementKeyboard="@xml/kbd_emoji_category1" />
     <Element
-        latin:elementName="emojiCategory2"
-        latin:elementKeyboard="@xml/kbd_emoji_category2" />
+        app:elementName="emojiCategory2"
+        app:elementKeyboard="@xml/kbd_emoji_category2" />
     <Element
-        latin:elementName="emojiCategory3"
-        latin:elementKeyboard="@xml/kbd_emoji_category3" />
+        app:elementName="emojiCategory3"
+        app:elementKeyboard="@xml/kbd_emoji_category3" />
     <Element
-        latin:elementName="emojiCategory4"
-        latin:elementKeyboard="@xml/kbd_emoji_category4" />
+        app:elementName="emojiCategory4"
+        app:elementKeyboard="@xml/kbd_emoji_category4" />
     <Element
-        latin:elementName="emojiCategory5"
-        latin:elementKeyboard="@xml/kbd_emoji_category5" />
+        app:elementName="emojiCategory5"
+        app:elementKeyboard="@xml/kbd_emoji_category5" />
     <Element
-        latin:elementName="emojiCategory6"
-        latin:elementKeyboard="@xml/kbd_emoji_category6" />
+        app:elementName="emojiCategory6"
+        app:elementKeyboard="@xml/kbd_emoji_category6" />
 </KeyboardLayoutSet>

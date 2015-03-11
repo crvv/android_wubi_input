@@ -19,14 +19,14 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:clobberSettingsKey="false"
+            app:clobberSettingsKey="false"
         >
             <Key
-                latin:keyStyle="settingsKeyStyle" />
+                app:keyStyle="settingsKeyStyle" />
         </case>
         <!-- clobberSettingsKey="true" -->
         <default>

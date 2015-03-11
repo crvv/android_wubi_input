@@ -19,30 +19,30 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+            app:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
         >
             <Key
-                latin:keySpec="["
-                latin:additionalMoreKeys="{" />
+                app:keySpec="["
+                app:additionalMoreKeys="{" />
             <Key
-                latin:keySpec="]"
-                latin:additionalMoreKeys="}" />
+                app:keySpec="]"
+                app:additionalMoreKeys="}" />
             <Key
-                latin:keySpec="\\"
-                latin:additionalMoreKeys="\\|" />
+                app:keySpec="\\"
+                app:additionalMoreKeys="\\|" />
         </case>
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
-                latin:keySpec="{" />
+                app:keySpec="{" />
             <Key
-                latin:keySpec="}" />
+                app:keySpec="}" />
             <Key
-                latin:keySpec="|" />
+                app:keySpec="|" />
         </default>
     </switch>
 </merge>

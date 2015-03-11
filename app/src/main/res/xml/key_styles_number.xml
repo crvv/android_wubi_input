@@ -19,128 +19,128 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <key-style
-        latin:styleName="numKeyBaseStyle"
-        latin:keyActionFlags="noKeyPreview" />
+        app:styleName="numKeyBaseStyle"
+        app:keyActionFlags="noKeyPreview" />
     <key-style
-        latin:styleName="numKeyStyle"
-        latin:keyLabelFlags="followKeyLargeLetterRatio"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numKeyStyle"
+        app:keyLabelFlags="followKeyLargeLetterRatio"
+        app:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numModeKeyStyle"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio|followFunctionalTextColor"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numModeKeyStyle"
+        app:keyLabelFlags="fontNormal|followKeyLetterRatio|followFunctionalTextColor"
+        app:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numFunctionalKeyStyle"
-        latin:keyLabelFlags="followKeyLargeLetterRatio"
-        latin:backgroundType="functional"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numFunctionalKeyStyle"
+        app:keyLabelFlags="followKeyLargeLetterRatio"
+        app:backgroundType="functional"
+        app:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numberKeyStyle"
-        latin:keyLabelFlags="alignLabelOffCenter|hasHintLabel"
-        latin:parentStyle="numKeyStyle" />
+        app:styleName="numberKeyStyle"
+        app:keyLabelFlags="alignLabelOffCenter|hasHintLabel"
+        app:parentStyle="numKeyStyle" />
     <key-style
-        latin:styleName="num0KeyStyle"
-        latin:keySpec="0"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num0KeyStyle"
+        app:keySpec="0"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num1KeyStyle"
-        latin:keySpec="1"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num1KeyStyle"
+        app:keySpec="1"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num2KeyStyle"
-        latin:keySpec="2"
-        latin:keyHintLabel="ABC"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num2KeyStyle"
+        app:keySpec="2"
+        app:keyHintLabel="ABC"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num3KeyStyle"
-        latin:keySpec="3"
-        latin:keyHintLabel="DEF"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num3KeyStyle"
+        app:keySpec="3"
+        app:keyHintLabel="DEF"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num4KeyStyle"
-        latin:keySpec="4"
-        latin:keyHintLabel="GHI"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num4KeyStyle"
+        app:keySpec="4"
+        app:keyHintLabel="GHI"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num5KeyStyle"
-        latin:keySpec="5"
-        latin:keyHintLabel="JKL"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num5KeyStyle"
+        app:keySpec="5"
+        app:keyHintLabel="JKL"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num6KeyStyle"
-        latin:keySpec="6"
-        latin:keyHintLabel="MNO"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num6KeyStyle"
+        app:keySpec="6"
+        app:keyHintLabel="MNO"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num7KeyStyle"
-        latin:keySpec="7"
-        latin:keyHintLabel="PQRS"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num7KeyStyle"
+        app:keySpec="7"
+        app:keyHintLabel="PQRS"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num8KeyStyle"
-        latin:keySpec="8"
-        latin:keyHintLabel="TUV"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num8KeyStyle"
+        app:keySpec="8"
+        app:keyHintLabel="TUV"
+        app:parentStyle="numberKeyStyle" />
     <key-style
-        latin:styleName="num9KeyStyle"
-        latin:keySpec="9"
-        latin:keyHintLabel="WXYZ"
-        latin:parentStyle="numberKeyStyle" />
+        app:styleName="num9KeyStyle"
+        app:keySpec="9"
+        app:keyHintLabel="WXYZ"
+        app:parentStyle="numberKeyStyle" />
     <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
     <key-style
-        latin:styleName="numStarKeyStyle"
-        latin:keySpec="&#xFF0A;|*"
-        latin:parentStyle="numKeyStyle" />
+        app:styleName="numStarKeyStyle"
+        app:keySpec="&#xFF0A;|*"
+        app:parentStyle="numKeyStyle" />
     <!-- Only for non-tablet device -->
     <key-style
-        latin:styleName="numPhoneToSymbolKeyStyle"
-        latin:keySpec="!text/keylabel_to_phone_symbols|!code/key_switch_alpha_symbol"
-        latin:parentStyle="numModeKeyStyle" />
+        app:styleName="numPhoneToSymbolKeyStyle"
+        app:keySpec="!text/keylabel_to_phone_symbols|!code/key_switch_alpha_symbol"
+        app:parentStyle="numModeKeyStyle" />
     <key-style
-        latin:styleName="numPhoneToNumericKeyStyle"
-        latin:keySpec="!text/keylabel_to_phone_numeric|!code/key_switch_alpha_symbol"
-        latin:parentStyle="numModeKeyStyle" />
+        app:styleName="numPhoneToNumericKeyStyle"
+        app:keySpec="!text/keylabel_to_phone_numeric|!code/key_switch_alpha_symbol"
+        app:parentStyle="numModeKeyStyle" />
     <key-style
-        latin:styleName="numPauseKeyStyle"
-        latin:keySpec="!text/label_pause_key|,"
-        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numPauseKeyStyle"
+        app:keySpec="!text/label_pause_key|,"
+        app:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
+        app:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numWaitKeyStyle"
-        latin:keySpec="!text/label_wait_key|;"
-        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numWaitKeyStyle"
+        app:keySpec="!text/label_wait_key|;"
+        app:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
+        app:parentStyle="numKeyBaseStyle" />
     <key-style
-        latin:styleName="numTabKeyStyle"
-        latin:keyActionFlags="noKeyPreview"
-        latin:parentStyle="tabKeyStyle" />
+        app:styleName="numTabKeyStyle"
+        app:keyActionFlags="noKeyPreview"
+        app:parentStyle="tabKeyStyle" />
     <key-style
-        latin:styleName="numSpaceKeyStyle"
-        latin:keySpec="!icon/space_key_for_number_layout|!code/key_space"
-        latin:keyLabelFlags="alignIconToBottom"
-        latin:keyActionFlags="enableLongPress"
-        latin:parentStyle="numKeyBaseStyle" />
+        app:styleName="numSpaceKeyStyle"
+        app:keySpec="!icon/space_key_for_number_layout|!code/key_space"
+        app:keyLabelFlags="alignIconToBottom"
+        app:keyActionFlags="enableLongPress"
+        app:parentStyle="numKeyBaseStyle" />
     <!-- TODO: Consolidate these space key styles with numSpaceKeyStyle above by introducing <case>
          predicator that checks device form-factor. -->
     <switch>
-        <case latin:keyboardTheme="ICS|KLP">
+        <case app:keyboardTheme="ICS|KLP">
             <key-style
-                latin:styleName="tabletNumSpaceKeyStyle"
-                latin:keySpec="!icon/space_key|!code/key_space"
-                latin:backgroundType="functional"
-                latin:keyActionFlags="enableLongPress"
-                latin:parentStyle="numKeyBaseStyle" />
+                app:styleName="tabletNumSpaceKeyStyle"
+                app:keySpec="!icon/space_key|!code/key_space"
+                app:backgroundType="functional"
+                app:keyActionFlags="enableLongPress"
+                app:parentStyle="numKeyBaseStyle" />
         </case>
-        <case latin:keyboardTheme="LXXLight|LXXDark">
+        <case app:keyboardTheme="LXXLight|LXXDark">
             <key-style
-                latin:styleName="tabletNumSpaceKeyStyle"
-                latin:keySpec="!icon/space_key|!code/key_space"
-                latin:backgroundType="spacebar"
-                latin:keyActionFlags="enableLongPress"
-                latin:parentStyle="numKeyBaseStyle" />
+                app:styleName="tabletNumSpaceKeyStyle"
+                app:keySpec="!icon/space_key|!code/key_space"
+                app:backgroundType="spacebar"
+                app:keyActionFlags="enableLongPress"
+                app:parentStyle="numKeyBaseStyle" />
         </case>
     </switch>
 </merge>

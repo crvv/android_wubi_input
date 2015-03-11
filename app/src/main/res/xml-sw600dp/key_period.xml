@@ -19,37 +19,37 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <!-- The table period key which may have different label depending on locale -->
     <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
     <switch>
         <case
-            latin:languageCode="hi"
-            latin:keyboardLayoutSet="hindi_compact"
+            app:languageCode="hi"
+            app:keyboardLayoutSet="hindi_compact"
         >
             <!-- U+0964: "।" DEVANAGARI DANDA -->
             <Key
-                latin:keySpec="\u0964"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,&quot;,+,\\%,&amp;"
-                latin:backgroundType="functional" />
+                app:keySpec="\u0964"
+                app:keyLabelFlags="hasPopupHint"
+                app:moreKeys="!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,&quot;,+,\\%,&amp;"
+                app:backgroundType="functional" />
         </case>
         <case
-            latin:keyboardLayoutSet="dvorak"
+            app:keyboardLayoutSet="dvorak"
         >
             <Key
-                latin:keySpec="\?"
-                latin:moreKeys="!text/morekeys_tablet_period,!text/morekeys_question" />
+                app:keySpec="\?"
+                app:moreKeys="!text/morekeys_tablet_period,!text/morekeys_question" />
         </case>
         <default>
             <Key
-                latin:keySpec="!text/keyspec_tablet_period"
-                latin:keyHintLabel="!text/keyhintlabel_tablet_period"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/morekeys_tablet_period"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                app:keySpec="!text/keyspec_tablet_period"
+                app:keyHintLabel="!text/keyhintlabel_tablet_period"
+                app:keyLabelFlags="hasPopupHint"
+                app:moreKeys="!text/morekeys_tablet_period"
+                app:backgroundType="functional"
+                app:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>
 </merge>

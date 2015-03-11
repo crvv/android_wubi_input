@@ -19,47 +19,47 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <include
-        latin:keyboardLayout="@xml/key_styles_common" />
+        app:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.692%p"
+        app:keyWidth="7.692%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_pcqwerty1" />
+            app:keyboardLayout="@xml/rowkeys_pcqwerty1" />
     </Row>
     <Row
-        latin:keyWidth="7.692%p"
+        app:keyWidth="7.692%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_pcqwerty2" />
+            app:keyboardLayout="@xml/rowkeys_pcqwerty2" />
     </Row>
     <Row
-        latin:keyWidth="7.692%p"
+        app:keyWidth="7.692%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_pcqwerty3"
-            latin:keyXPos="3.846%p" />
+            app:keyboardLayout="@xml/rowkeys_pcqwerty3"
+            app:keyXPos="3.846%p" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p" />
+            app:keyStyle="deleteKeyStyle"
+            app:keyWidth="fillRight"
+            app:visualInsetsLeft="1%p" />
     </Row>
     <Row
-        latin:keyWidth="7.692%p"
+        app:keyWidth="7.692%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.538%p"
-            latin:visualInsetsRight="1%p" />
+            app:keyStyle="shiftKeyStyle"
+            app:keyWidth="11.538%p"
+            app:visualInsetsRight="1%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_pcqwerty4" />
+            app:keyboardLayout="@xml/rowkeys_pcqwerty4" />
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p" />
+            app:keyStyle="shiftKeyStyle"
+            app:keyWidth="fillRight"
+            app:visualInsetsLeft="1%p" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_pcqwerty5" />
+        app:keyboardLayout="@xml/row_pcqwerty5" />
 </merge>

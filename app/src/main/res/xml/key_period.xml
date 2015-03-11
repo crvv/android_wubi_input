@@ -19,17 +19,17 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
 
         <default>
             <Key
-                latin:keySpec="!text/keyspec_period"
-                latin:keyHintLabel="!text/keyhintlabel_period"
-                latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
-                latin:moreKeys="!text/morekeys_period"
-                latin:backgroundType="functional" />
+                app:keySpec="!text/keyspec_period"
+                app:keyHintLabel="!text/keyhintlabel_period"
+                app:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
+                app:moreKeys="!text/morekeys_period"
+                app:backgroundType="functional" />
         </default>
     </switch>
 </merge>

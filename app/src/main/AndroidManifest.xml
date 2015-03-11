@@ -15,7 +15,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.android.inputmethod.latin">
+        package="com.github.crvv.wubinput.wubi">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
@@ -34,7 +34,7 @@
             android:supportsRtl="true"
             android:allowBackup="true">
 
-        <service android:name="LatinIME"
+        <service android:name="com.github.crvv.wubinput.wubi.WubiIME"
                 android:label="@string/english_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
@@ -45,7 +45,7 @@
         </service>
 
 
-        <activity android:name=".setup.SetupActivity"
+        <activity android:name="com.github.crvv.wubinput.wubi.setup.SetupActivity"
                   android:theme="@style/platformActivityTheme"
                   android:label="@string/english_ime_name"
                   android:icon="@drawable/ic_launcher_keyboard"
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".setup.SetupWizardActivity"
+        <activity android:name="com.github.crvv.wubinput.wubi.setup.SetupWizardActivity"
                   android:theme="@style/platformActivityTheme"
                   android:label="@string/english_ime_name"
                   android:clearTaskOnLaunch="true">
@@ -66,7 +66,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".settings.SettingsActivity"
+        <activity android:name="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
                   android:theme="@style/platformSettingsTheme"
                   android:label="@string/english_ime_settings"
                   android:uiOptions="splitActionBarWhenNarrow">
@@ -75,7 +75,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
+        <activity android:name="com.github.crvv.wubinput.dictionarypack.DictionarySettingsActivity"
                 android:theme="@style/platformSettingsTheme"
                 android:label="@string/dictionary_settings_title"
                 android:uiOptions="splitActionBarWhenNarrow">

@@ -19,8 +19,8 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <include
-        latin:keyboardLayout="@xml/rows_qwerty" />
+        app:keyboardLayout="@xml/rows_qwerty" />
 </Keyboard>

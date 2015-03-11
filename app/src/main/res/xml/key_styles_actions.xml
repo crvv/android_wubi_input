@@ -19,115 +19,115 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <!-- Go key -->
     <switch>
-        <case latin:isIconDefined="go_key">
+        <case app:isIconDefined="go_key">
             <key-style
-                latin:styleName="goActionKeyStyle"
-                latin:keySpec="!icon/go_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="goActionKeyStyle"
+                app:keySpec="!icon/go_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="goActionKeyStyle"
-                latin:keySpec="!text/label_go_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="goActionKeyStyle"
+                app:keySpec="!text/label_go_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <!-- Next key -->
     <switch>
-        <case latin:isIconDefined="next_key">
+        <case app:isIconDefined="next_key">
             <key-style
-                latin:styleName="nextActionKeyStyle"
-                latin:keySpec="!icon/next_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="nextActionKeyStyle"
+                app:keySpec="!icon/next_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="nextActionKeyStyle"
-                latin:keySpec="!text/label_next_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="nextActionKeyStyle"
+                app:keySpec="!text/label_next_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <!-- Previous key -->
     <switch>
-        <case latin:isIconDefined="previous_key">
+        <case app:isIconDefined="previous_key">
             <key-style
-                latin:styleName="previousActionKeyStyle"
-                latin:keySpec="!icon/previous_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="previousActionKeyStyle"
+                app:keySpec="!icon/previous_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="previousActionKeyStyle"
-                latin:keySpec="!text/label_previous_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="previousActionKeyStyle"
+                app:keySpec="!text/label_previous_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <!-- Done key -->
     <switch>
-        <case latin:isIconDefined="done_key">
+        <case app:isIconDefined="done_key">
             <key-style
-                latin:styleName="doneActionKeyStyle"
-                latin:keySpec="!icon/done_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="doneActionKeyStyle"
+                app:keySpec="!icon/done_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="doneActionKeyStyle"
-                latin:keySpec="!text/label_done_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="doneActionKeyStyle"
+                app:keySpec="!text/label_done_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <!-- Send key -->
     <switch>
-        <case latin:isIconDefined="send_key">
+        <case app:isIconDefined="send_key">
             <key-style
-                latin:styleName="sendActionKeyStyle"
-                latin:keySpec="!icon/send_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="sendActionKeyStyle"
+                app:keySpec="!icon/send_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="sendActionKeyStyle"
-                latin:keySpec="!text/label_send_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="sendActionKeyStyle"
+                app:keySpec="!text/label_send_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <!-- Seartch key -->
     <switch>
-        <case latin:isIconDefined="search_key">
+        <case app:isIconDefined="search_key">
             <key-style
-                latin:styleName="searchActionKeyStyle"
-                latin:keySpec="!icon/search_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="searchActionKeyStyle"
+                app:keySpec="!icon/search_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="searchActionKeyStyle"
-                latin:keySpec="!text/label_search_key|!code/key_enter"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="searchActionKeyStyle"
+                app:keySpec="!text/label_search_key|!code/key_enter"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
     <switch>
-        <case latin:keyboardTheme="ICS|KLP">
+        <case app:keyboardTheme="ICS|KLP">
             <key-style
-                latin:styleName="customLabelActionKeyStyle"
-                latin:keySpec="dummy_label|!code/key_enter"
-                latin:keyLabelFlags="fromCustomActionLabel"
-                latin:backgroundType="action"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="customLabelActionKeyStyle"
+                app:keySpec="dummy_label|!code/key_enter"
+                app:keyLabelFlags="fromCustomActionLabel"
+                app:backgroundType="action"
+                app:parentStyle="defaultEnterKeyStyle" />
         </case>
         <!-- keyboardTheme="LXXLight|LXXDark" -->
         <default>
             <key-style
-                latin:styleName="customLabelActionKeyStyle"
-                latin:keySpec="dummy_label|!code/key_enter"
-                latin:keyLabelFlags="fromCustomActionLabel"
-                latin:backgroundType="functional"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                app:styleName="customLabelActionKeyStyle"
+                app:keySpec="dummy_label|!code/key_enter"
+                app:keyLabelFlags="fromCustomActionLabel"
+                app:backgroundType="functional"
+                app:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
 </merge>

@@ -19,153 +19,153 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            app:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <key-style
-                latin:styleName="hasShiftedLetterHintStyle"
-                latin:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
+                app:styleName="hasShiftedLetterHintStyle"
+                app:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
         </case>
         <default>
             <key-style
-                latin:styleName="hasShiftedLetterHintStyle"
-                latin:keyLabelFlags="hasShiftedLetterHint" />
+                app:styleName="hasShiftedLetterHintStyle"
+                app:keyLabelFlags="hasShiftedLetterHint" />
         </default>
     </switch>
     <!-- Base key style for the key which may have settings key as more keys. -->
     <key-style
-        latin:styleName="baseSettingsMoreKeysStyle" />
+        app:styleName="baseSettingsMoreKeysStyle" />
     <include
-        latin:keyboardLayout="@xml/key_styles_settings" />
+        app:keyboardLayout="@xml/key_styles_settings" />
     <!-- Functional key styles -->
     <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
     <key-style
-        latin:styleName="baseForShiftKeyStyle"
-        latin:keyActionFlags="noKeyPreview"
-        latin:keyLabelFlags="preserveCase"
-        latin:moreKeys="!noPanelAutoMoreKey!, |!code/key_capslock" />
+        app:styleName="baseForShiftKeyStyle"
+        app:keyActionFlags="noKeyPreview"
+        app:keyLabelFlags="preserveCase"
+        app:moreKeys="!noPanelAutoMoreKey!, |!code/key_capslock" />
     <switch>
         <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+            app:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
         >
             <key-style
-                latin:styleName="shiftKeyStyle"
-                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
-                latin:backgroundType="stickyOff"
-                latin:parentStyle="baseForShiftKeyStyle" />
+                app:styleName="shiftKeyStyle"
+                app:keySpec="!icon/shift_key_shifted|!code/key_shift"
+                app:backgroundType="stickyOff"
+                app:parentStyle="baseForShiftKeyStyle" />
         </case>
         <case
-            latin:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+            app:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <key-style
-                latin:styleName="shiftKeyStyle"
-                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
-                latin:backgroundType="stickyOn"
-                latin:parentStyle="baseForShiftKeyStyle" />
+                app:styleName="shiftKeyStyle"
+                app:keySpec="!icon/shift_key_shifted|!code/key_shift"
+                app:backgroundType="stickyOn"
+                app:parentStyle="baseForShiftKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="shiftKeyStyle"
-                latin:keySpec="!icon/shift_key|!code/key_shift"
-                latin:backgroundType="stickyOff"
-                latin:parentStyle="baseForShiftKeyStyle" />
+                app:styleName="shiftKeyStyle"
+                app:keySpec="!icon/shift_key|!code/key_shift"
+                app:backgroundType="stickyOff"
+                app:parentStyle="baseForShiftKeyStyle" />
         </default>
     </switch>
     <key-style
-        latin:styleName="deleteKeyStyle"
-        latin:keySpec="!icon/delete_key|!code/key_delete"
-        latin:keyActionFlags="isRepeatable|noKeyPreview"
-        latin:backgroundType="functional" />
+        app:styleName="deleteKeyStyle"
+        app:keySpec="!icon/delete_key|!code/key_delete"
+        app:keyActionFlags="isRepeatable|noKeyPreview"
+        app:backgroundType="functional" />
     <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
     <switch>
-        <case latin:keyboardTheme="ICS|KLP">
+        <case app:keyboardTheme="ICS|KLP">
             <key-style
-                latin:styleName="emojiKeyStyle"
-                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="action" />
+                app:styleName="emojiKeyStyle"
+                app:keySpec="!icon/emoji_action_key|!code/key_emoji"
+                app:keyActionFlags="noKeyPreview"
+                app:backgroundType="action" />
         </case>
         <!-- keyboardTheme="LXXLight|LXXDark" -->
         <default>
             <key-style
-                latin:styleName="emojiKeyStyle"
-                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
-                latin:keyLabelFlags="keepBackgroundAspectRatio"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="action" />
+                app:styleName="emojiKeyStyle"
+                app:keySpec="!icon/emoji_action_key|!code/key_emoji"
+                app:keyLabelFlags="keepBackgroundAspectRatio"
+                app:keyActionFlags="noKeyPreview"
+                app:backgroundType="action" />
         </default>
     </switch>
     <include
-        latin:keyboardLayout="@xml/key_styles_enter" />
+        app:keyboardLayout="@xml/key_styles_enter" />
     <!-- TODO: Currently there is no way to specify icon alignment per theme. -->
     <key-style
-        latin:styleName="spaceKeyStyle"
-        latin:keySpec="!icon/space_key|!code/key_space"
-        latin:backgroundType="spacebar"
-        latin:keyActionFlags="noKeyPreview|enableLongPress" />
+        app:styleName="spaceKeyStyle"
+        app:keySpec="!icon/space_key|!code/key_space"
+        app:backgroundType="spacebar"
+        app:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
     <key-style
-        latin:styleName="zwnjKeyStyle"
-        latin:keySpec="!icon/zwnj_key|&#x200C;"
-        latin:moreKeys="!icon/zwj_key|&#x200D;"
-        latin:keyLabelFlags="hasPopupHint"
-        latin:keyActionFlags="noKeyPreview" />
+        app:styleName="zwnjKeyStyle"
+        app:keySpec="!icon/zwnj_key|&#x200C;"
+        app:moreKeys="!icon/zwj_key|&#x200D;"
+        app:keyLabelFlags="hasPopupHint"
+        app:keyActionFlags="noKeyPreview" />
     <key-style
-        latin:styleName="shortcutKeyStyle"
-        latin:keySpec="!icon/shortcut_key|!code/key_shortcut"
-        latin:keyIconDisabled="!icon/shortcut_key_disabled"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="!code/key_space"
-        latin:parentStyle="settingsMoreKeysStyle" />
+        app:styleName="shortcutKeyStyle"
+        app:keySpec="!icon/shortcut_key|!code/key_shortcut"
+        app:keyIconDisabled="!icon/shortcut_key_disabled"
+        app:keyActionFlags="noKeyPreview|altCodeWhileTyping"
+        app:altCode="!code/key_space"
+        app:parentStyle="settingsMoreKeysStyle" />
     <key-style
-        latin:styleName="settingsKeyStyle"
-        latin:keySpec="!icon/settings_key|!code/key_settings"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="!code/key_space"
-        latin:backgroundType="functional" />
+        app:styleName="settingsKeyStyle"
+        app:keySpec="!icon/settings_key|!code/key_settings"
+        app:keyActionFlags="noKeyPreview|altCodeWhileTyping"
+        app:altCode="!code/key_space"
+        app:backgroundType="functional" />
     <key-style
-        latin:styleName="languageSwitchKeyStyle"
-        latin:keySpec="!icon/language_switch_key|!code/key_language_switch"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
-        latin:altCode="!code/key_space" />
+        app:styleName="languageSwitchKeyStyle"
+        app:keySpec="!icon/language_switch_key|!code/key_language_switch"
+        app:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
+        app:altCode="!code/key_space" />
     <key-style
-        latin:styleName="tabKeyStyle"
-        latin:keySpec="!icon/tab_key|!code/key_tab"
-        latin:backgroundType="functional" />
+        app:styleName="tabKeyStyle"
+        app:keySpec="!icon/tab_key|!code/key_tab"
+        app:backgroundType="functional" />
     <!-- Note: This key style is not for functional tab key. This is used for the tab key which is
          laid out as normal letter key. -->
     <key-style
-        latin:styleName="nonSpecialBackgroundTabKeyStyle"
-        latin:keySpec="!icon/tab_key|!code/key_tab" />
+        app:styleName="nonSpecialBackgroundTabKeyStyle"
+        app:keySpec="!icon/tab_key|!code/key_tab" />
     <key-style
-        latin:styleName="baseForLayoutSwitchKeyStyle"
-        latin:keyLabelFlags="preserveCase|followFunctionalTextColor"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        app:styleName="baseForLayoutSwitchKeyStyle"
+        app:keyLabelFlags="preserveCase|followFunctionalTextColor"
+        app:keyActionFlags="noKeyPreview"
+        app:backgroundType="functional" />
     <key-style
-        latin:styleName="toSymbolKeyStyle"
-        latin:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
-        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+        app:styleName="toSymbolKeyStyle"
+        app:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
+        app:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
-        latin:styleName="toAlphaKeyStyle"
-        latin:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
-        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+        app:styleName="toAlphaKeyStyle"
+        app:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
+        app:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
-        latin:styleName="toMoreSymbolKeyStyle"
-        latin:keySpec="!text/keylabel_to_more_symbol|!code/key_shift"
-        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+        app:styleName="toMoreSymbolKeyStyle"
+        app:keySpec="!text/keylabel_to_more_symbol|!code/key_shift"
+        app:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
-        latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:keySpec="!text/keylabel_to_symbol|!code/key_shift"
-        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+        app:styleName="backFromMoreSymbolKeyStyle"
+        app:keySpec="!text/keylabel_to_symbol|!code/key_shift"
+        app:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
-        latin:styleName="comKeyStyle"
-        latin:keySpec="!text/keyspec_popular_domain"
-        latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
-        latin:moreKeys="!text/morekeys_popular_domain"
-        latin:backgroundType="functional" />
+        app:styleName="comKeyStyle"
+        app:keySpec="!text/keyspec_popular_domain"
+        app:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
+        app:moreKeys="!text/morekeys_popular_domain"
+        app:backgroundType="functional" />
 </merge>

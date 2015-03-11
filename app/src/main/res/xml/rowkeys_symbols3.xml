@@ -19,40 +19,40 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Key
-        latin:keySpec="*"
-        latin:moreKeys="!text/morekeys_star" />
+        app:keySpec="*"
+        app:moreKeys="!text/morekeys_star" />
     <switch>
         <case
-            latin:languageCode="fa"
+            app:languageCode="fa"
         >
             <Key
-                latin:keySpec="!text/keyspec_left_double_angle_quote"
-                latin:moreKeys="!text/morekeys_double_quote" />
+                app:keySpec="!text/keyspec_left_double_angle_quote"
+                app:moreKeys="!text/morekeys_double_quote" />
             <Key
-                latin:keySpec="!text/keyspec_right_double_angle_quote"
-                latin:moreKeys="!text/morekeys_single_quote" />
+                app:keySpec="!text/keyspec_right_double_angle_quote"
+                app:moreKeys="!text/morekeys_single_quote" />
         </case>
         <default>
             <Key
-                latin:keySpec="&quot;"
-                latin:moreKeys="!text/morekeys_double_quote" />
+                app:keySpec="&quot;"
+                app:moreKeys="!text/morekeys_double_quote" />
             <Key
-                latin:keySpec="\'"
-                latin:moreKeys="!text/morekeys_single_quote" />
+                app:keySpec="\'"
+                app:moreKeys="!text/morekeys_single_quote" />
         </default>
     </switch>
     <Key
-        latin:keySpec=":" />
+        app:keySpec=":" />
     <Key
-        latin:keySpec="!text/keyspec_symbols_semicolon"
-        latin:moreKeys="!text/morekeys_symbols_semicolon" />
+        app:keySpec="!text/keyspec_symbols_semicolon"
+        app:moreKeys="!text/morekeys_symbols_semicolon" />
     <Key
-        latin:keySpec="!"
-        latin:moreKeys="!text/morekeys_exclamation" />
+        app:keySpec="!"
+        app:moreKeys="!text/morekeys_exclamation" />
     <Key
-        latin:keySpec="!text/keyspec_symbols_question"
-        latin:moreKeys="!text/morekeys_question" />
+        app:keySpec="!text/keyspec_symbols_question"
+        app:moreKeys="!text/morekeys_question" />
 </merge>

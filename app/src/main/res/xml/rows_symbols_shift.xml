@@ -19,50 +19,50 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <include
-        latin:keyboardLayout="@xml/key_styles_common" />
+        app:keyboardLayout="@xml/key_styles_common" />
     <include
-        latin:keyboardLayout="@xml/key_styles_currency" />
+        app:keyboardLayout="@xml/key_styles_currency" />
     <Row
-        latin:keyWidth="10%p"
+        app:keyWidth="10%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols_shift1" />
+            app:keyboardLayout="@xml/rowkeys_symbols_shift1" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        app:keyWidth="10%p"
     >
         <include
-            latin:keyXPos="5%p"
-            latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
+            app:keyXPos="5%p"
+            app:keyboardLayout="@xml/rowkeys_symbols_shift2" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        app:keyWidth="10%p"
     >
         <Key
-            latin:keyStyle="backFromMoreSymbolKeyStyle"
-            latin:keyWidth="15%p"
-            latin:visualInsetsRight="1%p" />
+            app:keyStyle="backFromMoreSymbolKeyStyle"
+            app:keyWidth="15%p"
+            app:visualInsetsRight="1%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
+            app:keyboardLayout="@xml/rowkeys_symbols_shift3" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p" />
+            app:keyStyle="deleteKeyStyle"
+            app:keyWidth="fillRight"
+            app:visualInsetsLeft="1%p" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
-        latin:backgroundType="functional"
+        app:keyWidth="10%p"
+        app:backgroundType="functional"
     >
         <Key
-            latin:keyStyle="toAlphaKeyStyle"
-            latin:keyWidth="15%p" />
+            app:keyStyle="toAlphaKeyStyle"
+            app:keyWidth="15%p" />
         <include
-            latin:keyboardLayout="@xml/row_symbols_shift4" />
+            app:keyboardLayout="@xml/row_symbols_shift4" />
         <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="enterKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
 </merge>

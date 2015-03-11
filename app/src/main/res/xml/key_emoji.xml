@@ -19,20 +19,20 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <switch>
         <case
-            latin:mode="email|url"
+            app:mode="email|url"
         >
             <Key
-                latin:keyStyle="comKeyStyle"
-                latin:keyWidth="fillRight" />
+                app:keyStyle="comKeyStyle"
+                app:keyWidth="fillRight" />
         </case>
         <default>
             <Key
-                latin:keyStyle="emojiKeyStyle"
-                latin:keyWidth="fillRight" />
+                app:keyStyle="emojiKeyStyle"
+                app:keyWidth="fillRight" />
         </default>
     </switch>
 </merge>

@@ -16,21 +16,21 @@
 
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <!-- Left edge -->
-    <item latin:state_left_edge="true" latin:state_has_morekeys="true"
+    <item app:state_left_edge="true" app:state_has_morekeys="true"
           android:drawable="@drawable/keyboard_key_feedback_left_more_background_ics" />
-    <item latin:state_left_edge="true"
+    <item app:state_left_edge="true"
           android:drawable="@drawable/keyboard_key_feedback_left_background_ics" />
 
     <!-- Right edge -->
-    <item latin:state_right_edge="true" latin:state_has_morekeys="true"
+    <item app:state_right_edge="true" app:state_has_morekeys="true"
           android:drawable="@drawable/keyboard_key_feedback_right_more_background_ics" />
-    <item latin:state_right_edge="true"
+    <item app:state_right_edge="true"
           android:drawable="@drawable/keyboard_key_feedback_right_background_ics" />
 
-    <item latin:state_has_morekeys="true"
+    <item app:state_has_morekeys="true"
           android:drawable="@drawable/keyboard_key_feedback_more_background_ics" />
     <item android:drawable="@drawable/keyboard_key_feedback_background_ics" />
 </selector>

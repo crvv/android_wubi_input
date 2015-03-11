@@ -18,27 +18,27 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+<merge xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput">
     <!-- U+20AC: "€" EURO SIGN
          U+00A2: "¢" CENT SIGN
          U+00A3: "£" POUND SIGN
          U+00A5: "¥" YEN SIGN
          U+20B1: "₱" PESO SIGN -->
     <key-style
-        latin:styleName="currencyKeyStyle"
-        latin:keySpec="&#x20AC;"
-        latin:moreKeys="&#x00A2;,&#x00A3;,$,&#x00A5;,&#x20B1;" />
+        app:styleName="currencyKeyStyle"
+        app:keySpec="&#x20AC;"
+        app:moreKeys="&#x00A2;,&#x00A3;,$,&#x00A5;,&#x20B1;" />
     <key-style
-        latin:styleName="moreCurrency1KeyStyle"
-        latin:keySpec="&#x00A3;" />
+        app:styleName="moreCurrency1KeyStyle"
+        app:keySpec="&#x00A3;" />
     <key-style
-        latin:styleName="moreCurrency2KeyStyle"
-        latin:keySpec="&#x00A5;" />
+        app:styleName="moreCurrency2KeyStyle"
+        app:keySpec="&#x00A5;" />
     <key-style
-        latin:styleName="moreCurrency3KeyStyle"
-        latin:keySpec="$"
-        latin:moreKeys="&#x00A2;" />
+        app:styleName="moreCurrency3KeyStyle"
+        app:keySpec="$"
+        app:moreKeys="&#x00A2;" />
     <key-style
-        latin:styleName="moreCurrency4KeyStyle"
-        latin:keySpec="&#x00A2;" />
+        app:styleName="moreCurrency4KeyStyle"
+        app:keySpec="&#x00A2;" />
 </merge>

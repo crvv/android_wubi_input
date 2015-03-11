@@ -19,38 +19,38 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Key
-        latin:keySpec="~" />
+        app:keySpec="~" />
     <Key
-        latin:keySpec="`" />
+        app:keySpec="`" />
     <Key
-        latin:keySpec="|" />
+        app:keySpec="|" />
     <!-- U+2022: "•" BULLET -->
     <Key
-        latin:keySpec="&#x2022;"
-        latin:moreKeys="!text/morekeys_bullet" />
+        app:keySpec="&#x2022;"
+        app:moreKeys="!text/morekeys_bullet" />
     <!-- U+221A: "√" SQUARE ROOT -->
     <Key
-        latin:keySpec="&#x221A;" />
+        app:keySpec="&#x221A;" />
     <!-- U+03C0: "π" GREEK SMALL LETTER PI
          U+03A0: "Π" GREEK CAPITAL LETTER PI -->
     <Key
-        latin:keySpec="&#x03C0;"
-        latin:moreKeys="&#x03A0;" />
+        app:keySpec="&#x03C0;"
+        app:moreKeys="&#x03A0;" />
     <!-- U+00F7: "÷" DIVISION SIGN -->
     <Key
-        latin:keySpec="&#x00F7;" />
+        app:keySpec="&#x00F7;" />
     <!-- U+00D7: "×" MULTIPLICATION SIGN -->
     <Key
-        latin:keySpec="&#x00D7;" />
+        app:keySpec="&#x00D7;" />
     <!-- U+00B6: "¶" PILCROW SIGN
          U+00A7: "§" SECTION SIGN -->
     <Key
-        latin:keySpec="&#x00B6;"
-        latin:moreKeys="&#x00A7;" />
+        app:keySpec="&#x00B6;"
+        app:moreKeys="&#x00A7;" />
     <!-- U+2206: "∆" INCREMENT -->
     <Key
-        latin:keySpec="&#x2206;" />
+        app:keySpec="&#x2206;" />
 </merge>

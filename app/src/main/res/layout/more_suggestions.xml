@@ -24,13 +24,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
 >
-    <com.android.inputmethod.dictionary.suggestions.MoreSuggestionsView
-        xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    <com.github.crvv.wubinput.dictionary.suggestions.MoreSuggestionsView
+        xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
         android:id="@+id/more_suggestions_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        latin:keyLetterSize="@dimen/config_suggestion_text_size"
-        latin:keyLabelSize="@dimen/config_suggestion_text_size"
-        latin:keyHintLetterRatio="@fraction/config_more_suggestions_info_ratio"
-        latin:keyHintLetterColor="@android:color/white" />
+        app:keyLetterSize="@dimen/config_suggestion_text_size"
+        app:keyLabelSize="@dimen/config_suggestion_text_size"
+        app:keyHintLetterRatio="@fraction/config_more_suggestions_info_ratio"
+        app:keyHintLetterColor="@android:color/white" />
 </LinearLayout>

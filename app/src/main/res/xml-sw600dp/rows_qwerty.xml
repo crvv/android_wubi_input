@@ -19,43 +19,43 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <include
-        latin:keyboardLayout="@xml/key_styles_common" />
+        app:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="9.0%p"
+        app:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty1" />
+            app:keyboardLayout="@xml/rowkeys_qwerty1" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="deleteKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="9.0%p"
+        app:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty2"
-            latin:keyXPos="4.5%p" />
+            app:keyboardLayout="@xml/rowkeys_qwerty2"
+            app:keyXPos="4.5%p" />
         <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="enterKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="9.0%p"
+        app:keyWidth="9.0%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p" />
+            app:keyStyle="shiftKeyStyle"
+            app:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
+            app:keyboardLayout="@xml/rowkeys_qwerty3" />
         <include
-            latin:keyboardLayout="@xml/keys_exclamation_question" />
+            app:keyboardLayout="@xml/keys_exclamation_question" />
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="shiftKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+        app:keyboardLayout="@xml/row_qwerty4" />
 </merge>

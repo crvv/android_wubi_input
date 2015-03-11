@@ -19,113 +19,113 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:app="http://schemas.android.com/apk/res/com.github.crvv.wubinput"
 >
     <Row>
         <Key
-            latin:keySpec="1"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="1"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="2"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="2"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="3"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="3"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="-"
-            latin:moreKeys="+"
-            latin:keyLabelFlags="hasPopupHint"
-            latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keySpec="-"
+            app:moreKeys="+"
+            app:keyLabelFlags="hasPopupHint"
+            app:keyStyle="numFunctionalKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keySpec="4"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="4"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="5"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="5"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="6"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="6"
+            app:keyStyle="numKeyStyle" />
         <switch>
             <case
-                latin:mode="date"
+                app:mode="date"
             >
                 <Key
-                    latin:keySpec="."
-                    latin:keyStyle="numFunctionalKeyStyle"
-                    latin:keyWidth="fillRight" />
+                    app:keySpec="."
+                    app:keyStyle="numFunctionalKeyStyle"
+                    app:keyWidth="fillRight" />
             </case>
             <case
-                latin:mode="time|datetime"
+                app:mode="time|datetime"
             >
                 <Key
-                    latin:keySpec="."
-                    latin:keyLabelFlags="hasPopupHint"
-                    latin:moreKeys="!text/morekeys_am_pm"
-                    latin:keyStyle="numFunctionalKeyStyle"
-                    latin:keyWidth="fillRight" />
+                    app:keySpec="."
+                    app:keyLabelFlags="hasPopupHint"
+                    app:moreKeys="!text/morekeys_am_pm"
+                    app:keyStyle="numFunctionalKeyStyle"
+                    app:keyWidth="fillRight" />
             </case>
             <default>
                 <Key
-                    latin:keySpec=","
-                    latin:keyStyle="numFunctionalKeyStyle"
-                    latin:keyWidth="fillRight" />
+                    app:keySpec=","
+                    app:keyStyle="numFunctionalKeyStyle"
+                    app:keyWidth="fillRight" />
             </default>
         </switch>
     </Row>
     <Row>
         <Key
-            latin:keySpec="7"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="7"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keySpec="8"
-            latin:keyStyle="numKeyStyle"/>
+            app:keySpec="8"
+            app:keyStyle="numKeyStyle"/>
         <Key
-            latin:keySpec="9"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="9"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="deleteKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
     <Row>
         <switch>
             <case
-                latin:mode="date"
+                app:mode="date"
             >
                 <Key
-                    latin:keySpec="/"
-                    latin:keyStyle="numKeyStyle" />
+                    app:keySpec="/"
+                    app:keyStyle="numKeyStyle" />
             </case>
             <case
-                latin:mode="time"
+                app:mode="time"
             >
                 <Key
-                    latin:keySpec=":"
-                    latin:keyStyle="numKeyStyle" />
+                    app:keySpec=":"
+                    app:keyStyle="numKeyStyle" />
             </case>
             <case
-                latin:mode="datetime"
+                app:mode="datetime"
             >
                 <Key
-                    latin:keySpec="/ :|/"
-                    latin:moreKeys="!noPanelAutoMoreKey!,:"
-                    latin:keyStyle="numKeyStyle" />
+                    app:keySpec="/ :|/"
+                    app:moreKeys="!noPanelAutoMoreKey!,:"
+                    app:keyStyle="numKeyStyle" />
             </case>
             <default>
                 <Key
-                    latin:keySpec="."
-                    latin:keyStyle="numKeyStyle" />
+                    app:keySpec="."
+                    app:keyStyle="numKeyStyle" />
             </default>
         </switch>
         <Key
-            latin:keySpec="0"
-            latin:keyStyle="numKeyStyle" />
+            app:keySpec="0"
+            app:keyStyle="numKeyStyle" />
         <Key
-            latin:keyStyle="numSpaceKeyStyle" />
+            app:keyStyle="numSpaceKeyStyle" />
         <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            app:keyStyle="enterKeyStyle"
+            app:keyWidth="fillRight" />
     </Row>
 </merge>
