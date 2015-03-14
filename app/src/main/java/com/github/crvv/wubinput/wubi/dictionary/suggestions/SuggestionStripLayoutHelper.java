@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -46,16 +45,12 @@ import android.widget.TextView;
 
 import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
 import com.github.crvv.wubinput.annotations.UsedForTesting;
-import com.github.crvv.wubinput.wubi.PunctuationSuggestions;
 import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
-//import com.android.inputmethod.latin.define.DebugFlags;
 import com.github.crvv.wubinput.wubi.settings.Settings;
 import com.github.crvv.wubinput.wubi.settings.SettingsValues;
-//import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.github.crvv.wubinput.wubi.utils.ResourceUtils;
-import com.github.crvv.wubinput.wubi.utils.SubtypeLocaleUtils;
 import com.github.crvv.wubinput.wubi.utils.ViewLayoutUtils;
 
 import java.util.ArrayList;
@@ -360,11 +355,6 @@ final class SuggestionStripLayoutHelper {
      */
     public int layoutAndReturnStartIndexOfMoreSuggestions(final SuggestedWords suggestedWords,
             final ViewGroup stripView, final ViewGroup placerView) {
-        if (suggestedWords.isPunctuationSuggestions()) {
-            return layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(
-                    (PunctuationSuggestions)suggestedWords, stripView);
-        }
-
         final int startIndexOfMoreSuggestions = setupWordViewsAndReturnStartIndexOfMoreSuggestions(
                 suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
@@ -520,94 +510,6 @@ final class SuggestionStripLayoutHelper {
             count++;
         }
         return indexInSuggestedWords;
-    }
-
-    private int layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(
-            final PunctuationSuggestions punctuationSuggestions, final ViewGroup stripView) {
-        final int countInStrip = Math.min(punctuationSuggestions.size(), PUNCTUATIONS_IN_STRIP);
-        for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
-            if (positionInStrip != 0) {
-                // Add divider if this isn't the left most suggestion in suggestions strip.
-                addDivider(stripView, mDividerViews.get(positionInStrip));
-            }
-
-            final TextView wordView = mWordViews.get(positionInStrip);
-            final String punctuation = punctuationSuggestions.getLabel(positionInStrip);
-            // {@link TextView#getTag()} is used to get the index in suggestedWords at
-            // {@link SuggestionStripView#onClick(View)}.
-            wordView.setTag(positionInStrip);
-            wordView.setText(punctuation);
-            wordView.setContentDescription(punctuation);
-            wordView.setTextScaleX(1.0f);
-            wordView.setCompoundDrawables(null, null, null, null);
-            wordView.setTextColor(mColorAutoCorrect);
-            stripView.addView(wordView);
-            setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
-        }
-        mMoreSuggestionsAvailable = (punctuationSuggestions.size() > countInStrip);
-        return countInStrip;
-    }
-
-    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip) {
-        final boolean shouldShowUiToAcceptTypedWord = Settings.getInstance().getCurrent()
-                .mShouldShowUiToAcceptTypedWord;
-        final int stripWidth = addToDictionaryStrip.getWidth();
-        final int width = shouldShowUiToAcceptTypedWord ? stripWidth
-                : stripWidth - mDividerWidth - mPadding * 2;
-
-        final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
-        wordView.setTextColor(mColorTypedWord);
-        final int wordWidth = (int)(width * mCenterSuggestionWeight);
-        final CharSequence wordToSave = getEllipsizedText(word, wordWidth, wordView.getPaint());
-        final float wordScaleX = wordView.getTextScaleX();
-        wordView.setText(wordToSave);
-        wordView.setTextScaleX(wordScaleX);
-        setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-        final int wordVisibility = shouldShowUiToAcceptTypedWord ? View.GONE : View.VISIBLE;
-        wordView.setVisibility(wordVisibility);
-        addToDictionaryStrip.findViewById(R.id.word_to_save_divider).setVisibility(wordVisibility);
-
-        final Resources res = addToDictionaryStrip.getResources();
-        final CharSequence hintText;
-        final int hintWidth;
-        final float hintWeight;
-        final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
-                R.id.hint_add_to_dictionary);
-        if (shouldShowUiToAcceptTypedWord) {
-            hintText = res.getText(R.string.hint_add_to_dictionary_without_word);
-            hintWidth = width;
-            hintWeight = 1.0f;
-            hintView.setGravity(Gravity.CENTER);
-        } else {
-            final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
-                    == ViewCompat.LAYOUT_DIRECTION_RTL);
-            final String arrow = isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW;
-            final boolean isRtlSystem = SubtypeLocaleUtils.isRtlLanguage(
-                    res.getConfiguration().locale);
-            final CharSequence hint = res.getText(R.string.hint_add_to_dictionary);
-            hintText = (isRtlLanguage == isRtlSystem) ? (arrow + hint) : (hint + arrow);
-            hintWidth = width - wordWidth;
-            hintWeight = 1.0f - mCenterSuggestionWeight;
-            hintView.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
-        }
-        hintView.setTextColor(mColorAutoCorrect);
-        final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
-        hintView.setText(hintText);
-        hintView.setTextScaleX(hintScaleX);
-        setLayoutWeight(hintView, hintWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-    }
-
-    public void layoutImportantNotice(final View importantNoticeStrip,
-            final String importantNoticeTitle) {
-        final TextView titleView = (TextView)importantNoticeStrip.findViewById(
-                R.id.important_notice_title);
-        final int width = titleView.getWidth() - titleView.getPaddingLeft()
-                - titleView.getPaddingRight();
-        titleView.setTextColor(mColorAutoCorrect);
-        titleView.setText(importantNoticeTitle);
-        titleView.setTextScaleX(1.0f); // Reset textScaleX.
-        final float titleScaleX = getTextScaleX(importantNoticeTitle, width, titleView.getPaint());
-        titleView.setTextScaleX(titleScaleX);
     }
 
     static void setLayoutWeight(final View v, final float weight, final int height) {

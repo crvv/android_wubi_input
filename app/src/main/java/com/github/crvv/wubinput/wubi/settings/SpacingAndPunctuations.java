@@ -18,10 +18,7 @@ package com.github.crvv.wubinput.wubi.settings;
 
 import android.content.res.Resources;
 
-import com.github.crvv.wubinput.annotations.UsedForTesting;
-import com.github.crvv.wubinput.keyboard.internal.MoreKeySpec;
 import com.github.crvv.wubinput.wubi.Constants;
-import com.github.crvv.wubinput.wubi.PunctuationSuggestions;
 import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.utils.StringUtils;
 
@@ -34,7 +31,6 @@ public final class SpacingAndPunctuations {
     private final int[] mSortedSymbolsClusteringTogether;
     private final int[] mSortedWordConnectors;
     public final int[] mSortedWordSeparators;
-    public final PunctuationSuggestions mSuggestPuncList;
     private final int mSentenceSeparator;
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
@@ -64,25 +60,6 @@ public final class SpacingAndPunctuations {
         // English variants. German rules (not "German typography") also have small gotchas.
         mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
         mUsesGermanRules = Locale.GERMAN.getLanguage().equals(locale.getLanguage());
-        final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(
-                res.getString(R.string.suggested_punctuations));
-        mSuggestPuncList = PunctuationSuggestions.newPunctuationSuggestions(suggestPuncsSpec);
-    }
-
-    @UsedForTesting
-    public SpacingAndPunctuations(final SpacingAndPunctuations model,
-            final int[] overrideSortedWordSeparators) {
-        mSortedSymbolsPrecededBySpace = model.mSortedSymbolsPrecededBySpace;
-        mSortedSymbolsFollowedBySpace = model.mSortedSymbolsFollowedBySpace;
-        mSortedSymbolsClusteringTogether = model.mSortedSymbolsClusteringTogether;
-        mSortedWordConnectors = model.mSortedWordConnectors;
-        mSortedWordSeparators = overrideSortedWordSeparators;
-        mSuggestPuncList = model.mSuggestPuncList;
-        mSentenceSeparator = model.mSentenceSeparator;
-        mSentenceSeparatorAndSpace = model.mSentenceSeparatorAndSpace;
-        mCurrentLanguageHasSpaces = model.mCurrentLanguageHasSpaces;
-        mUsesAmericanTypography = model.mUsesAmericanTypography;
-        mUsesGermanRules = model.mUsesGermanRules;
     }
 
     public boolean isWordSeparator(final int code) {
@@ -91,10 +68,6 @@ public final class SpacingAndPunctuations {
 
     public boolean isWordConnector(final int code) {
         return Arrays.binarySearch(mSortedWordConnectors, code) >= 0;
-    }
-
-    public boolean isWordCodePoint(final int code) {
-        return Character.isLetter(code) || isWordConnector(code);
     }
 
     public boolean isUsuallyPrecededBySpace(final int code) {
@@ -111,30 +84,5 @@ public final class SpacingAndPunctuations {
 
     public boolean isSentenceSeparator(final int code) {
         return code == mSentenceSeparator;
-    }
-
-    public String dump() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("mSortedSymbolsPrecededBySpace = ");
-        sb.append("" + Arrays.toString(mSortedSymbolsPrecededBySpace));
-        sb.append("\n   mSortedSymbolsFollowedBySpace = ");
-        sb.append("" + Arrays.toString(mSortedSymbolsFollowedBySpace));
-        sb.append("\n   mSortedWordConnectors = ");
-        sb.append("" + Arrays.toString(mSortedWordConnectors));
-        sb.append("\n   mSortedWordSeparators = ");
-        sb.append("" + Arrays.toString(mSortedWordSeparators));
-        sb.append("\n   mSuggestPuncList = ");
-        sb.append("" + mSuggestPuncList);
-        sb.append("\n   mSentenceSeparator = ");
-        sb.append("" + mSentenceSeparator);
-        sb.append("\n   mSentenceSeparatorAndSpace = ");
-        sb.append("" + mSentenceSeparatorAndSpace);
-        sb.append("\n   mCurrentLanguageHasSpaces = ");
-        sb.append("" + mCurrentLanguageHasSpaces);
-        sb.append("\n   mUsesAmericanTypography = ");
-        sb.append("" + mUsesAmericanTypography);
-        sb.append("\n   mUsesGermanRules = ");
-        sb.append("" + mUsesGermanRules);
-        return sb.toString();
     }
 }

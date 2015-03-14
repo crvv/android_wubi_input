@@ -172,10 +172,6 @@ public final class WordComposer {
         return size() > 0;
     }
 
-    public InputPointers getInputPointers() {
-        return mInputPointers;
-    }
-
     /**
      * Process an event and return an event, and return a processed event to apply.
      * @param event the unprocessed event.
@@ -404,15 +400,6 @@ public final class WordComposer {
         if (!isComposingWord()) {
             mCapitalizedMode = mode;
         }
-    }
-
-    /**
-     * Returns whether the word was automatically capitalized.
-     * @return whether the word was automatically capitalized
-     */
-    public boolean wasAutoCapitalized() {
-        return mCapitalizedMode == CAPS_MODE_AUTO_SHIFT_LOCKED
-                || mCapitalizedMode == CAPS_MODE_AUTO_SHIFTED;
     }
 
     /**

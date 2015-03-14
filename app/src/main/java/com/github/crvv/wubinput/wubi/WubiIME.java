@@ -116,16 +116,10 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
 
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
 
-    /**
-     * The name of the scheme used by the Package Manager to warn of a new package installation,
-     * replacement or removal.
-     */
-    private static final String SCHEME_PACKAGE = "package";
-
     private final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator = new DictionaryFacilitator();
 
-    private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
+    private final InputLogic mInputLogic = new InputLogic(this,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
     // If it turns out we need several, it will get grown seamlessly.
@@ -1156,13 +1150,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         return keyboard.getCoordinates(codePoints);
     }
 
-    // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
-    // pressed.
-    @Override
-    public void showImportantNoticeContents() {
-        showOptionDialog(new ImportantNoticeDialog(this /* context */, this /* listener */));
-    }
-
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
     public void onClickSettingsOfImportantNoticeDialog(final int nextVersion) {
@@ -1328,19 +1315,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         return null != mSuggestionStripView;
     }
 
-    @Override
-    public boolean isShowingAddToDictionaryHint() {
-        return hasSuggestionStripView() && mSuggestionStripView.isShowingAddToDictionaryHint();
-    }
-
-    @Override
-    public void dismissAddToDictionaryHint() {
-        if (!hasSuggestionStripView()) {
-            return;
-        }
-        mSuggestionStripView.dismissAddToDictionaryHint();
-    }
-
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         mInputLogic.setSuggestedWords(suggestedWords, currentSettingsValues, mHandler);
@@ -1372,7 +1346,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
                 currentSettingsValues.isApplicationSpecifiedCompletionsOn()
                 && suggestedWords.isEmpty();
         final boolean noSuggestionsFromDictionaries = (SuggestedWords.EMPTY == suggestedWords)
-                || suggestedWords.isPunctuationSuggestions()
                 || isEmptyApplicationSpecifiedCompletions;
         final boolean isBeginningOfSentencePrediction = (suggestedWords.mInputStyle
                 == SuggestedWords.INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION);
@@ -1432,21 +1405,11 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         updateStateAfterInputTransaction(completeInputTransaction);
     }
 
-    @Override
-    public void showAddToDictionaryHint(final String word) {
-        if (!hasSuggestionStripView()) {
-            return;
-        }
-        mSuggestionStripView.showAddToDictionaryHint(word);
-    }
-
     // This will show either an empty suggestion strip (if prediction is enabled) or
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
-                ? SuggestedWords.EMPTY : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
+        final SuggestedWords neutralSuggestions =SuggestedWords.EMPTY;
         setSuggestedWords(neutralSuggestions);
     }
 

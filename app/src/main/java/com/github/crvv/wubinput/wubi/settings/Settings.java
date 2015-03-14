@@ -42,7 +42,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
     // In the same order as xml/prefs.xml
-    public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_POPUP_ON = "popup_on";
@@ -51,7 +50,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE = "show_suggestions_setting";
     public static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
-    public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
@@ -74,9 +72,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
-    public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
-    public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
-            "pref_gesture_floating_preview_text";
     public static final String PREF_PHRASE_GESTURE_ENABLED = "pref_gesture_space_aware";
 
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
@@ -192,12 +187,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readFromBuildConfigIfGestureInputEnabled(final Resources res) {
         return res.getBoolean(R.bool.config_gesture_input_enabled_by_build_config);
-    }
-
-    public static boolean readGestureInputEnabled(final SharedPreferences prefs,
-            final Resources res) {
-        return readFromBuildConfigIfGestureInputEnabled(res)
-                && prefs.getBoolean(PREF_GESTURE_INPUT, true);
     }
 
     public static boolean readPhraseGestureEnabled(final SharedPreferences prefs,

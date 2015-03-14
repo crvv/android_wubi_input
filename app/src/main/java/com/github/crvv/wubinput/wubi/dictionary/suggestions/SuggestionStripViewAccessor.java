@@ -22,9 +22,6 @@ import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
  * An object that gives basic control of a suggestion strip and some info on it.
  */
 public interface SuggestionStripViewAccessor {
-    public void showAddToDictionaryHint(final String word);
-    public boolean isShowingAddToDictionaryHint();
-    public void dismissAddToDictionaryHint();
     public void setNeutralSuggestionStrip();
     public void showSuggestionStrip(final SuggestedWords suggestedWords);
 }

@@ -57,7 +57,6 @@ public final class SettingsValues {
     public final boolean mHasHardwareKeyboard;
     public final int mDisplayOrientation;
     // From preferences, in the same order as xml/prefs.xml:
-    public final boolean mAutoCap;
     public final boolean mVibrateOn;
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
@@ -82,7 +81,6 @@ public final class SettingsValues {
     public final int mKeypressVibrationDuration;
     public final float mKeypressSoundVolume;
     public final int mKeyPreviewPopupDismissDelay;
-    private final boolean mAutoCorrectEnabled = false;
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -120,7 +118,6 @@ public final class SettingsValues {
         }
 
         // Get the settings preferences
-        mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
         mVibrateOn = Settings.readVibrationEnabled(prefs, res);
         mSoundOn = Settings.readKeypressSoundEnabled(prefs, res);
         mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);

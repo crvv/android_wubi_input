@@ -89,12 +89,6 @@ public final class Constants {
             public static final String EMOJI_CAPABLE = "EmojiCapable";
 
             /**
-             * The subtype extra value used to indicate that this subtype requires a network
-             * connection to work.
-             */
-            public static final String REQ_NETWORK_CONNECTIVITY = "requireNetworkConnectivity";
-
-            /**
              * The subtype extra value used to indicate that the display name of this subtype
              * contains a "%s" for printf-like replacement and it should be replaced by
              * this extra value.
@@ -152,7 +146,6 @@ public final class Constants {
     // TODO: replace the following constants with state in InputTransaction?
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
-    public static final int SPELL_CHECKER_COORDINATE = -3;
     public static final int EXTERNAL_KEYBOARD_COORDINATE = -4;
 
     // A hint on how many characters to cache from the TextView. A good value of this is given by

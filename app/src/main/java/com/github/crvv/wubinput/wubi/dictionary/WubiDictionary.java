@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class WubiDictionary extends Dictionary{
 
-    private boolean isAvailable = false;
+    private boolean mIsInitialized = false;
     private static final String LOG_TAG = "Dictionary";
     private Context main;
     private Map<String, ArrayList<String>> mDict;
@@ -58,7 +58,7 @@ public class WubiDictionary extends Dictionary{
 
     @Override
     public boolean isInitialized(){
-        return isAvailable;
+        return mIsInitialized;
     }
 
     private Map<String, ArrayList<String>> readDictFromResource(){
@@ -100,6 +100,6 @@ public class WubiDictionary extends Dictionary{
 
     private void ReadDictionary() {
         mDict = readDictFromResource();
-        isAvailable = true;
+        mIsInitialized = true;
     }
 }

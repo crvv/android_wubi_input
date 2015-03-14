@@ -63,7 +63,6 @@ import com.github.crvv.wubinput.wubi.utils.TextRange;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class manages the input logic.
@@ -249,20 +248,6 @@ public final class InputLogic {
     }
 
     /**
-     * Determines whether "Touch again to save" should be shown or not.
-     * @param suggestionInfo the suggested word chosen by the user.
-     * @return {@code true} if we should show the "Touch again to save" hint.
-     */
-    private boolean shouldShowAddToDictionaryHint(final SuggestedWordInfo suggestionInfo) {
-        // We should show the "Touch again to save" hint if the user pressed the first entry
-        // AND it's in none of our current dictionaries (main, user or otherwise).
-        return (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
-                || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
-                && !mDictionaryFacilitator.isValidWord(suggestionInfo.mWord, true /* ignoreCase */)
-                && mDictionaryFacilitator.isUserDictionaryEnabled();
-    }
-
-    /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
      * @param suggestionInfo the suggestion info.
@@ -276,16 +261,8 @@ public final class InputLogic {
             final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final WubiIME.UIHandler handler) {
-        final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
-        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
-        if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
-            // Word separators are suggested before the user inputs something.
-            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
-            final Event event = Event.createPunctuationSuggestionPickedEvent(suggestionInfo);
-            return onCodeInput(settingsValues, event, keyboardShiftState,
-                    currentKeyboardScriptId, handler);
-        }
+
 
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
@@ -319,7 +296,6 @@ public final class InputLogic {
             return inputTransaction;
         }
 
-        final boolean shouldShowAddToDictionaryHint = shouldShowAddToDictionaryHint(suggestionInfo);
         commitChosenWord(settingsValues, suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
         mConnection.endBatchEdit();
@@ -329,13 +305,10 @@ public final class InputLogic {
         mSpaceState = SpaceState.PHANTOM;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
-        if (shouldShowAddToDictionaryHint) {
-            mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
-        } else {
+
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
             handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
-        }
         return inputTransaction;
     }
 
@@ -783,10 +756,6 @@ public final class InputLogic {
             mConnection.removeBackgroundColorFromHighlightedTextIfNecessary();
             // In case the "add to dictionary" hint was still displayed.
             // TODO: Do we really need to check if we have composing text here?
-            if (mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
-                mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
-//                mTextDecorator.reset();
-            }
         }
 
         final int codePoint = event.mCodePoint;
@@ -945,9 +914,7 @@ public final class InputLogic {
             mSpaceState = SpaceState.SWAP_PUNCTUATION;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         } else if (Constants.CODE_SPACE == codePoint) {
-            if (!mSuggestedWords.isPunctuationSuggestions()) {
-                mSpaceState = SpaceState.WEAK;
-            }
+            mSpaceState = SpaceState.WEAK;
 
             startDoubleSpacePeriodCountdown(inputTransaction);
             if (wasComposingWord || mSuggestedWords.isEmpty()) {
@@ -1605,21 +1572,7 @@ public final class InputLogic {
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
 
-        if (shouldShowAddToDictionaryForTypedWord) {
-            // Due to the API limitation as of L, we cannot reliably retrieve the reverted text
-            // when the separator causes line breaking. Until this API limitation is addressed in
-            // the framework, show the indicator only when the separator doesn't contain
-            // line-breaking characters.
-            if (!StringUtils.hasLineBreakCharacter(separatorString)) {
-//                mTextDecorator.showAddToDictionaryIndicator(originallyTypedWordString,
-//                        mConnection.getExpectedSelectionStart(),
-//                        mConnection.getExpectedSelectionEnd());
-            }
-            mSuggestionStripViewAccessor.showAddToDictionaryHint(originallyTypedWordString);
-        } else {
-            // We have a separator between the word and the cursor: we should show predictions.
-            inputTransaction.setRequiresUpdateSuggestions();
-        }
+        inputTransaction.setRequiresUpdateSuggestions();
     }
 
     /**
@@ -1656,15 +1609,7 @@ public final class InputLogic {
      * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
      */
     public int getCurrentAutoCapsState(final SettingsValues settingsValues) {
-        if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
-
-        final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
-        final int inputType = ei.inputType;
-        // Warning: this depends on mSpaceState, which may not be the most current value. If
-        // mSpaceState gets updated later, whoever called this may need to be told about it.
-        return mConnection.getCursorCapsMode(inputType, settingsValues.mSpacingAndPunctuations,
-                SpaceState.PHANTOM == mSpaceState);
+        return Constants.TextUtils.CAP_MODE_OFF;
     }
 
     public int getCurrentRecapitalizeState() {
@@ -1817,14 +1762,11 @@ public final class InputLogic {
      */
     private SuggestedWords retrieveOlderSuggestions(final String typedWord,
             final SuggestedWords previousSuggestedWords) {
-        final SuggestedWords oldSuggestedWords =
-                previousSuggestedWords.isPunctuationSuggestions() ? SuggestedWords.EMPTY
-                        : previousSuggestedWords;
         final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
+                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, previousSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
                 false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
-                true /* isObsoleteSuggestions */, oldSuggestedWords.mInputStyle);
+                true /* isObsoleteSuggestions */, previousSuggestedWords.mInputStyle);
     }
 
     /**

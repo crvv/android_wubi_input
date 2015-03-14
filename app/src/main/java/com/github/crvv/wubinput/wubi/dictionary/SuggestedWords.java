@@ -158,14 +158,6 @@ public class SuggestedWords {
         return debugString;
     }
 
-    /**
-     * The predicator to tell whether this object represents punctuation suggestions.
-     * @return false if this object desn't represent punctuation suggestions.
-     */
-    public boolean isPunctuationSuggestions() {
-        return false;
-    }
-
     @Override
     public String toString() {
         // Pretty-print method to help debug

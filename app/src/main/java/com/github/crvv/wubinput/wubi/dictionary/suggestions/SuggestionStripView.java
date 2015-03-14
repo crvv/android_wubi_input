@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -34,7 +33,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,8 +46,6 @@ import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
-import com.github.crvv.wubinput.wubi.settings.Settings;
-import com.github.crvv.wubinput.wubi.settings.SettingsValues;
 import com.github.crvv.wubinput.wubi.dictionary.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.github.crvv.wubinput.wubi.utils.ImportantNoticeUtils;
 
@@ -58,18 +54,14 @@ import java.util.ArrayList;
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
     public interface Listener {
-        public void showImportantNoticeContents();
-        public void pickSuggestionManually(SuggestedWordInfo word);
-        public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
+        void pickSuggestionManually(SuggestedWordInfo word);
+        void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
     }
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
 
     private final ViewGroup mSuggestionsStrip;
-    private final ImageButton mVoiceKey;
-    private final ViewGroup mAddToDictionaryStrip;
-    private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
 
     private final View mMoreSuggestionsContainer;
@@ -77,7 +69,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
 
     private final ArrayList<TextView> mWordViews = new ArrayList<>();
-    private final ArrayList<TextView> mDebugInfoViews = new ArrayList<>();
     private final ArrayList<View> mDividerViews = new ArrayList<>();
 
     Listener mListener;
@@ -90,7 +81,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private static class StripVisibilityGroup {
         private final View mSuggestionStripView;
         private final View mSuggestionsStrip;
-        private final View mAddToDictionaryStrip;
         private final View mImportantNoticeStrip;
 
         public StripVisibilityGroup(final View suggestionStripView,
@@ -98,7 +88,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 final View importantNoticeStrip) {
             mSuggestionStripView = suggestionStripView;
             mSuggestionsStrip = suggestionsStrip;
-            mAddToDictionaryStrip = addToDictionaryStrip;
             mImportantNoticeStrip = importantNoticeStrip;
             showSuggestionsStrip();
         }
@@ -108,30 +97,15 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                     : ViewCompat.LAYOUT_DIRECTION_LTR;
             ViewCompat.setLayoutDirection(mSuggestionStripView, layoutDirection);
             ViewCompat.setLayoutDirection(mSuggestionsStrip, layoutDirection);
-            ViewCompat.setLayoutDirection(mAddToDictionaryStrip, layoutDirection);
-            ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
         }
 
         public void showSuggestionsStrip() {
             mSuggestionsStrip.setVisibility(VISIBLE);
-            mAddToDictionaryStrip.setVisibility(INVISIBLE);
-            mImportantNoticeStrip.setVisibility(INVISIBLE);
-        }
-
-        public void showAddToDictionaryStrip() {
-            mSuggestionsStrip.setVisibility(INVISIBLE);
-            mAddToDictionaryStrip.setVisibility(VISIBLE);
-            mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
         public void showImportantNoticeStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
-            mAddToDictionaryStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(VISIBLE);
-        }
-
-        public boolean isShowingAddToDictionaryStrip() {
-            return mAddToDictionaryStrip.getVisibility() == VISIBLE;
         }
     }
 
@@ -152,11 +126,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
-        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
-        mAddToDictionaryStrip = (ViewGroup)findViewById(R.id.add_to_dictionary_strip);
-        mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
-                mAddToDictionaryStrip, mImportantNoticeStrip);
+                null, null);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
@@ -168,11 +139,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             final TextView info = new TextView(context, null, R.attr.suggestionWordStyle);
             info.setTextColor(Color.WHITE);
             info.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEBUG_INFO_TEXT_SIZE_IN_DIP);
-            mDebugInfoViews.add(info);
         }
 
         mLayoutHelper = new SuggestionStripLayoutHelper(
-                context, attrs, defStyle, mWordViews, mDividerViews, mDebugInfoViews);
+                context, attrs, defStyle, mWordViews, mDividerViews, null);
 
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
@@ -187,10 +157,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         final TypedArray keyboardAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
-        final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
         keyboardAttr.recycle();
-        mVoiceKey.setImageDrawable(iconVoice);
-        mVoiceKey.setOnClickListener(this);
     }
 
     /**
@@ -205,8 +172,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
-        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
@@ -220,27 +185,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void setMoreSuggestionsHeight(final int remainingHeight) {
         mLayoutHelper.setMoreSuggestionsHeight(remainingHeight);
-    }
-
-    public boolean isShowingAddToDictionaryHint() {
-        return mStripVisibilityGroup.isShowingAddToDictionaryStrip();
-    }
-
-    public void showAddToDictionaryHint(final String word) {
-        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip);
-        // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
-        // will be extracted at {@link #onClick(View)}.
-        mAddToDictionaryStrip.setTag(word);
-        mAddToDictionaryStrip.setOnClickListener(this);
-        mStripVisibilityGroup.showAddToDictionaryStrip();
-    }
-
-    public boolean dismissAddToDictionaryHint() {
-        if (isShowingAddToDictionaryHint()) {
-            clear();
-            return true;
-        }
-        return false;
     }
 
     // This method checks if we should show the important notice (checks on permanent storage if
@@ -261,27 +205,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
         }
-        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
         mStripVisibilityGroup.showImportantNoticeStrip();
-        mImportantNoticeStrip.setOnClickListener(this);
         return true;
     }
 
     public void clear() {
         mSuggestionsStrip.removeAllViews();
-        removeAllDebugInfoViews();
         mStripVisibilityGroup.showSuggestionsStrip();
         dismissMoreSuggestionsPanel();
-    }
-
-    private void removeAllDebugInfoViews() {
-        // The debug info views may be placed as children views of this {@link SuggestionStripView}.
-        for (final View debugInfoView : mDebugInfoViews) {
-            final ViewParent parent = debugInfoView.getParent();
-            if (parent instanceof ViewGroup) {
-                ((ViewGroup)parent).removeView(debugInfoView);
-            }
-        }
     }
 
     private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
@@ -473,24 +404,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void onClick(final View view) {
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
                 Constants.CODE_UNSPECIFIED, this);
-        if (view == mImportantNoticeStrip) {
-            mListener.showImportantNoticeContents();
-            return;
-        }
-        if (view == mVoiceKey) {
-            mListener.onCodeInput(Constants.CODE_SHORTCUT,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
-                    false /* isKeyRepeat */);
-            return;
-        }
         final Object tag = view.getTag();
-        // {@link String} tag is set at {@link #showAddToDictionaryHint(String,CharSequence)}.
-//        if (tag instanceof String) {
-//            final String wordToSave = (String)tag;
-//            mListener.addWordToUserDictionary(wordToSave);
-//            clear();
-//            return;
-//        }
 
         // {@link Integer} tag is set at
         // {@link SuggestionStripLayoutHelper#setupWordViewsTextAndColor(SuggestedWords,int)} and
