@@ -16,8 +16,6 @@
 
 package com.github.crvv.wubinput.keyboard;
 
-import android.text.TextUtils;
-
 import com.github.crvv.wubinput.keyboard.internal.TouchPositionCorrection;
 
 import java.util.ArrayList;
@@ -44,21 +42,15 @@ public class ProximityInfo {
     private final int mKeyboardMinWidth;
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
-    private final int mMostCommonKeyHeight;
     private final List<Key> mSortedKeys;
     private final List<Key>[] mGridNeighbors;
-    private final String mLocaleStr;
 
     @SuppressWarnings("unchecked")
     ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
             final int minWidth, final int height, final int mostCommonKeyWidth,
             final int mostCommonKeyHeight, final List<Key> sortedKeys,
             final TouchPositionCorrection touchPositionCorrection) {
-        if (TextUtils.isEmpty(localeStr)) {
-            mLocaleStr = "";
-        } else {
-            mLocaleStr = localeStr;
-        }
+
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -66,7 +58,6 @@ public class ProximityInfo {
         mCellHeight = (height + mGridHeight - 1) / mGridHeight;
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
-        mMostCommonKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
         mSortedKeys = sortedKeys;
         mGridNeighbors = new List[mGridSize];
