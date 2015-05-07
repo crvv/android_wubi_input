@@ -26,8 +26,6 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
-        <!-- EmojiPalettesView style -->
-        <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
@@ -181,21 +179,6 @@
         <attr name="divider" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="EmojiPalettesView">
-        <attr name="categoryIndicatorEnabled" format="boolean" />
-        <attr name="categoryIndicatorDrawable" format="reference" />
-        <attr name="categoryIndicatorBackground" format="reference" />
-        <attr name="categoryPageIndicatorColor" format="color" />
-        <attr name="categoryPageIndicatorBackground" format="color" />
-        <attr name="iconEmojiRecentsTab" format="reference" />
-        <attr name="iconEmojiCategory1Tab" format="reference" />
-        <attr name="iconEmojiCategory2Tab" format="reference" />
-        <attr name="iconEmojiCategory3Tab" format="reference" />
-        <attr name="iconEmojiCategory4Tab" format="reference" />
-        <attr name="iconEmojiCategory5Tab" format="reference" />
-        <attr name="iconEmojiCategory6Tab" format="reference" />
-    </declare-styleable>
-
     <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOptions" format="integer">
             <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
@@ -260,8 +243,6 @@
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
         <attr name="iconImeKey" format="reference" />
-        <attr name="iconEmojiActionKey" format="reference" />
-        <attr name="iconEmojiNormalKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_GridRows">
@@ -435,13 +416,6 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
-            <enum name="emojiRecents" value="10" />
-            <enum name="emojiCategory1" value="11" />
-            <enum name="emojiCategory2" value="12" />
-            <enum name="emojiCategory3" value="13" />
-            <enum name="emojiCategory4" value="14" />
-            <enum name="emojiCategory5" value="15" />
-            <enum name="emojiCategory6" value="16" />
         </attr>
         <!-- This should be aligned with Keyboard.themeId and KeyboardTheme.THEME_ID_* -->
         <attr name="keyboardTheme" format="enum|string">
@@ -503,13 +477,6 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
-            <enum name="emojiRecents" value="10" />
-            <enum name="emojiCategory1" value="11" />
-            <enum name="emojiCategory2" value="12" />
-            <enum name="emojiCategory3" value="13" />
-            <enum name="emojiCategory4" value="14" />
-            <enum name="emojiCategory5" value="15" />
-            <enum name="emojiCategory6" value="16" />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
         <!-- Enable proximity characters correction. Disabled by default. -->

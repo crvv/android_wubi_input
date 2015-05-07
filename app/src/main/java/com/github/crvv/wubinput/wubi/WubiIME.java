@@ -16,10 +16,6 @@
 
 package com.github.crvv.wubinput.wubi;
 
-import static com.github.crvv.wubinput.wubi.Constants.ImeOption.FORCE_ASCII;
-import static com.github.crvv.wubinput.wubi.Constants.ImeOption.NO_MICROPHONE;
-import static com.github.crvv.wubinput.wubi.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,8 +36,6 @@ import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.PrintWriterPrinter;
-import android.util.Printer;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -59,9 +53,6 @@ import android.widget.TextView;
 import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
 import com.github.crvv.wubinput.annotations.UsedForTesting;
 import com.github.crvv.wubinput.compat.InputMethodServiceCompatUtils;
-import com.github.crvv.wubinput.wubi.dictionary.DictionaryFacilitator;
-import com.github.crvv.wubinput.wubi.dictionary.Suggest;
-import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.event.Event;
 import com.github.crvv.wubinput.event.HardwareEventDecoder;
 import com.github.crvv.wubinput.event.HardwareKeyboardEventDecoder;
@@ -71,16 +62,19 @@ import com.github.crvv.wubinput.keyboard.KeyboardActionListener;
 import com.github.crvv.wubinput.keyboard.KeyboardId;
 import com.github.crvv.wubinput.keyboard.KeyboardSwitcher;
 import com.github.crvv.wubinput.keyboard.MainKeyboardView;
-import com.github.crvv.wubinput.wubi.dictionary.Suggest.OnGetSuggestedWordsCallback;
-import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
 import com.github.crvv.wubinput.wubi.define.ProductionFlags;
+import com.github.crvv.wubinput.wubi.dictionary.DictionaryFacilitator;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest;
+import com.github.crvv.wubinput.wubi.dictionary.Suggest.OnGetSuggestedWordsCallback;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
+import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripView;
+import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.github.crvv.wubinput.wubi.inputlogic.InputLogic;
 import com.github.crvv.wubinput.wubi.settings.Settings;
 import com.github.crvv.wubinput.wubi.settings.SettingsActivity;
 import com.github.crvv.wubinput.wubi.settings.SettingsValues;
-import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripView;
-import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripViewAccessor;
 import com.github.crvv.wubinput.wubi.utils.ApplicationUtils;
 import com.github.crvv.wubinput.wubi.utils.CoordinateUtils;
 import com.github.crvv.wubinput.wubi.utils.CursorAnchorInfoUtils;
@@ -92,10 +86,12 @@ import com.github.crvv.wubinput.wubi.utils.StatsUtils;
 import com.github.crvv.wubinput.wubi.utils.SubtypeLocaleUtils;
 import com.github.crvv.wubinput.wubi.utils.ViewLayoutUtils;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.github.crvv.wubinput.wubi.Constants.ImeOption.FORCE_ASCII;
+import static com.github.crvv.wubinput.wubi.Constants.ImeOption.NO_MICROPHONE;
+import static com.github.crvv.wubinput.wubi.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -1039,8 +1035,8 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
             outInsets.visibleTopInsets = inputHeight;
             return;
         }
-        final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
-                && mSuggestionStripView.getVisibility() == View.VISIBLE)
+        final int suggestionsHeight = (
+                mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
         final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
@@ -1057,18 +1053,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
         }
         outInsets.contentTopInsets = visibleTopY;
         outInsets.visibleTopInsets = visibleTopY;
-    }
-
-    public void startShowingInputView() {
-        mIsExecutingStartShowingInputView = true;
-        // This {@link #showWindow(boolean)} will eventually call back
-        // {@link #onEvaluateInputViewShown()}.
-        showWindow(true /* showInput */);
-        mIsExecutingStartShowingInputView = false;
-    }
-
-    public void stopShowingInputView() {
-        showWindow(false /* showInput */);
     }
 
     @Override
@@ -1131,10 +1115,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
 
     private int getCurrentRecapitalizeState() {
         return mInputLogic.getCurrentRecapitalizeState();
-    }
-
-    public Locale getCurrentSubtypeLocale() {
-        return mSubtypeSwitcher.getCurrentSubtypeLocale();
     }
 
     /**

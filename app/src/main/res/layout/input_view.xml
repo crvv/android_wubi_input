@@ -25,7 +25,4 @@
     <include
         android:id="@+id/main_keyboard_frame"
         layout="@layout/main_keyboard_frame" />
-    <include
-        android:id="@+id/emoji_palettes_view"
-        layout="@layout/emoji_palettes_view" />
 </com.github.crvv.wubinput.wubi.InputView>

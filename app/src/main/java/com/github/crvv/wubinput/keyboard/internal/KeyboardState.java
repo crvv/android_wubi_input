@@ -45,7 +45,6 @@ public final class KeyboardState {
         public void setAlphabetAutomaticShiftedKeyboard();
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
-        public void setEmojiKeyboard();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -163,8 +162,6 @@ public final class KeyboardState {
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
             setAlphabetKeyboard(currentAutoCapsState, currentRecapitalizeState);
-        } else if (state.mIsEmojiMode) {
-            setEmojiKeyboard();
         } else {
             if (state.mShiftMode == MANUAL_SHIFT) {
                 setSymbolsShiftedKeyboard();
@@ -327,19 +324,6 @@ public final class KeyboardState {
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
-    }
-
-    private void setEmojiKeyboard() {
-        if (DEBUG_ACTION) {
-            Log.d(TAG, "setEmojiKeyboard");
-        }
-        mIsAlphabetMode = false;
-        mIsEmojiMode = true;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        // Remember caps lock mode and reset alphabet shift state.
-        mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
-        mAlphabetShiftState.setShiftLocked(false);
-        mSwitchActions.setEmojiKeyboard();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer,
@@ -659,8 +643,6 @@ public final class KeyboardState {
         // If the code is a letter, update keyboard shift state.
         if (Constants.isLetterCode(code)) {
             updateAlphabetShiftState(currentAutoCapsState, currentRecapitalizeState);
-        } else if (code == Constants.CODE_EMOJI) {
-            setEmojiKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
             setAlphabetKeyboard(currentAutoCapsState, currentRecapitalizeState);
         }

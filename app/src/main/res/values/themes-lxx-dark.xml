@@ -23,7 +23,6 @@
         <item name="keyboardStyle">@style/Keyboard.LXX_Dark</item>
         <item name="keyboardViewStyle">@style/KeyboardView.LXX_Dark</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX_Dark</item>
-        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX_Dark</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX_Dark</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX_Dark</item>
         <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.LXX_Dark.Action</item>
@@ -71,23 +70,6 @@
         <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lxx_dark</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
-    </style>
-    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
-         for instance delete button, need themed {@link KeyboardView} attributes. -->
-    <style
-        name="EmojiPalettesView.LXX_Dark"
-        parent="MainKeyboardView.LXX_Dark"
-    >
-        <item name="categoryIndicatorEnabled">false</item>
-        <item name="categoryPageIndicatorColor">@color/highlight_color_lxx_dark</item>
-        <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_lxx_dark</item>
-        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_lxx_dark</item>
-        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_lxx_dark</item>
-        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_lxx_dark</item>
-        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_lxx_dark</item>
-        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_lxx_dark</item>
-        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_lxx_dark</item>
-        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_lxx_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.LXX_Dark"

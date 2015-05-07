@@ -37,7 +37,5 @@
             app:backgroundType="normal" />
         <include
             app:keyboardLayout="@xml/key_period" />
-        <include
-            app:keyboardLayout="@xml/key_emoji" />
     </Row>
 </merge>

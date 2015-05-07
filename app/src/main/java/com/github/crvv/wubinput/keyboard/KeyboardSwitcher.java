@@ -28,7 +28,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.github.crvv.wubinput.compat.InputMethodServiceCompatUtils;
 import com.github.crvv.wubinput.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
-import com.github.crvv.wubinput.keyboard.emoji.EmojiPalettesView;
 import com.github.crvv.wubinput.keyboard.internal.KeyboardState;
 import com.github.crvv.wubinput.keyboard.internal.KeyboardTextsSet;
 import com.github.crvv.wubinput.wubi.InputView;
@@ -51,7 +50,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
     private MainKeyboardView mKeyboardView;
-    private EmojiPalettesView mEmojiPalettesView;
     private WubiIME mLatinIME;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
@@ -124,12 +122,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
-            return;
         }
     }
 
     public void saveKeyboardState() {
-        if (getKeyboard() != null || isShowingEmojiPalettes()) {
+        if (getKeyboard() != null) {
             mState.onSaveKeyboardState();
         }
     }
@@ -239,29 +236,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private void setMainKeyboardFrame(final SettingsValues settingsValues) {
         mMainKeyboardFrame.setVisibility(
                 settingsValues.mHasHardwareKeyboard ? View.GONE : View.VISIBLE);
-        mEmojiPalettesView.setVisibility(View.GONE);
-        mEmojiPalettesView.stopEmojiPalettes();
-    }
-
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setEmojiKeyboard() {
-        final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
-        mMainKeyboardFrame.setVisibility(View.GONE);
-        mEmojiPalettesView.startEmojiPalettes(
-                mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
-                mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
-        mEmojiPalettesView.setVisibility(View.VISIBLE);
-    }
-
-    public void onToggleEmojiKeyboard() {
-        if (mKeyboardLayoutSet == null || !isShowingEmojiPalettes()) {
-            mLatinIME.startShowingInputView();
-            setEmojiKeyboard();
-        } else {
-            mLatinIME.stopShowingInputView();
-            setAlphabetKeyboard();
-        }
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -309,21 +283,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, currentAutoCapsState, currentRecapitalizeState);
     }
 
-    public boolean isShowingEmojiPalettes() {
-        return mEmojiPalettesView != null && mEmojiPalettesView.isShown();
-    }
-
     public boolean isShowingMoreKeysPanel() {
-        if (isShowingEmojiPalettes()) {
-            return false;
-        }
         return mKeyboardView.isShowingMoreKeysPanel();
     }
 
     public View getVisibleKeyboardView() {
-        if (isShowingEmojiPalettes()) {
-            return mEmojiPalettesView;
-        }
         return mKeyboardView;
     }
 
@@ -335,9 +299,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (mKeyboardView != null) {
             mKeyboardView.cancelAllOngoingEvents();
             mKeyboardView.deallocateMemory();
-        }
-        if (mEmojiPalettesView != null) {
-            mEmojiPalettesView.stopEmojiPalettes();
         }
     }
 
@@ -351,22 +312,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
-        mEmojiPalettesView = (EmojiPalettesView)mCurrentInputView.findViewById(
-                R.id.emoji_palettes_view);
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
-        mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
-                isHardwareAcceleratedDrawingEnabled);
-        mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
         return mCurrentInputView;
-    }
-
-    public void onNetworkStateChanged() {
-        if (mKeyboardView != null) {
-            mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
-        }
     }
 
     public int getKeyboardShiftMode() {
