@@ -20,7 +20,7 @@ import java.util.Map;
 public class WubiDictionary extends Dictionary{
 
     private boolean mIsInitialized = false;
-    private static final String LOG_TAG = "Dictionary";
+    private static final String TAG = "Dictionary";
     private Context main;
     private Map<String, ArrayList<String>> mDict;
 
@@ -46,7 +46,6 @@ public class WubiDictionary extends Dictionary{
             suggestedWords.add(new SuggestedWords.SuggestedWordInfo(word, 1000 - index, SuggestedWords.SuggestedWordInfo.KIND_CORRECTION, this, index, 1));
             index++;
         }
-
         return suggestedWords;
 
     }
@@ -85,10 +84,10 @@ public class WubiDictionary extends Dictionary{
                     dict.put(words[0], list);
                 }
             }
-            Log.i(LOG_TAG, "read from resource file success, " + String.valueOf(System.currentTimeMillis() - start));
+            Log.i(TAG, "read from resource file success, " + String.valueOf(System.currentTimeMillis() - start));
         }
         catch(Exception e){
-            Log.e(LOG_TAG, "read from resource file failed");
+            Log.e(TAG, "read from resource file failed");
             return null;
         }
         finally{

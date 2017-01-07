@@ -1551,7 +1551,6 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
     };
 
     private void launchSettings() {
-        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
