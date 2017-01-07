@@ -23,15 +23,6 @@
 >
     <switch>
         <case
-            app:keyboardLayoutSet="dvorak"
-        >
-            <Key
-                app:keySpec="q"
-                app:moreKeys="!text/morekeys_q,%"
-                app:backgroundType="normal"
-                app:keyStyle="settingsMoreKeysStyle" />
-        </case>
-        <case
             app:mode="url"
         >
             <Key
