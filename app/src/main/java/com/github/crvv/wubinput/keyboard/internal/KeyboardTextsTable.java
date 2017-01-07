@@ -654,11 +654,19 @@ public final class KeyboardTextsTable {
         /* morekeys_j */ "\u0135",
     };
 
+    private static final String[] TEXTS_zh;
+    static {
+        TEXTS_zh = new String[102];
+        TEXTS_zh[77] = "，";
+        TEXTS_zh[101] = "。";
+    }
+
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
         "DEFAULT", TEXTS_DEFAULT, /* 168/168 DEFAULT */
         "en"     , TEXTS_en,    /*   8/ 11 English */
         "zz"     , TEXTS_zz,    /*  19/112 Alphabet */
+        "zh"     , TEXTS_zh,
     };
 
     static {
