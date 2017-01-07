@@ -234,9 +234,6 @@ public final class InputLogic {
         }
         handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
         final String text = performSpecificTldProcessingOnTextInput(rawText);
-        if (SpaceState.PHANTOM == mSpaceState) {
-            promotePhantomSpace(settingsValues);
-        }
         mConnection.commitText(text, 1);
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
@@ -271,16 +268,6 @@ public final class InputLogic {
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
         mConnection.beginBatchEdit();
-        if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
-                // In the batch input mode, a manually picked suggested word should just replace
-                // the current batch input text and there is no need for a phantom space.
-                && !mWordComposer.isBatchMode()) {
-            final int firstChar = Character.codePointAt(suggestion, 0);
-            if (!settingsValues.isWordSeparator(firstChar)
-                    || settingsValues.isUsuallyPrecededBySpace(firstChar)) {
-                promotePhantomSpace(settingsValues);
-            }
-        }
 
         // TODO: We should not need the following branch. We should be able to take the same
         // code path as for other kinds, use commitChosenWord, and do everything normally. We will
@@ -532,7 +519,6 @@ public final class InputLogic {
                 if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
                     final String[] commitParts = candidate.mWord.split(Constants.WORD_SEPARATOR, 2);
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
-                    promotePhantomSpace(settingsValues);
                     mConnection.commitText(commitParts[0], 0);
                     mSpaceState = SpaceState.PHANTOM;
                     keyboardSwitcher.requestUpdatingShiftState(
@@ -801,7 +787,6 @@ public final class InputLogic {
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            promotePhantomSpace(settingsValues);
         }
 
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -879,38 +864,15 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            commitTyped(settingsValues,StringUtils.newSingleCodePointString(codePoint));
+            commitTyped(settingsValues, StringUtils.newSingleCodePointString(codePoint));
         }
 
-        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
-                inputTransaction);
+        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event, inputTransaction);
 
         final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
                 && mConnection.isInsideDoubleQuoteOrAfterDigit();
 
-        final boolean needsPrecedingSpace;
-        if (SpaceState.PHANTOM != inputTransaction.mSpaceState) {
-            needsPrecedingSpace = false;
-        } else if (Constants.CODE_DOUBLE_QUOTE == codePoint) {
-            // Double quotes behave like they are usually preceded by space iff we are
-            // not inside a double quote or after a digit.
-            needsPrecedingSpace = !isInsideDoubleQuoteOrAfterDigit;
-        } else if (settingsValues.mSpacingAndPunctuations.isClusteringSymbol(codePoint)
-                && settingsValues.mSpacingAndPunctuations.isClusteringSymbol(
-                        mConnection.getCodePointBeforeCursor())) {
-            needsPrecedingSpace = false;
-        } else {
-            needsPrecedingSpace = settingsValues.isUsuallyPrecededBySpace(codePoint);
-        }
-
-        if (needsPrecedingSpace) {
-            promotePhantomSpace(settingsValues);
-        }
-
-        if (tryPerformDoubleSpacePeriod(event, inputTransaction)) {
-            mSpaceState = SpaceState.DOUBLE;
-            inputTransaction.setRequiresUpdateSuggestions();
-        } else if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
+        if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
             mSpaceState = SpaceState.SWAP_PUNCTUATION;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         } else if (Constants.CODE_SPACE == codePoint) {
@@ -1016,17 +978,7 @@ public final class InputLogic {
                 // reverting any autocorrect at this point. So we can safely return.
                 return;
             }
-            if (SpaceState.DOUBLE == inputTransaction.mSpaceState) {
-                cancelDoubleSpacePeriodCountdown();
-                if (mConnection.revertDoubleSpacePeriod()) {
-                    // No need to reset mSpaceState, it has already be done (that's why we
-                    // receive it as a parameter)
-                    inputTransaction.setRequiresUpdateSuggestions();
-                    mWordComposer.setCapitalizedModeAtStartComposingTime(
-                            WordComposer.CAPS_MODE_OFF);
-                    return;
-                }
-            } else if (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
+            if (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
                 if (mConnection.revertSwapPunctuation()) {
                     // Likewise
                     return;
@@ -1843,22 +1795,6 @@ public final class InputLogic {
     }
 
     /**
-     * Promote a phantom space to an actual space.
-     *
-     * This essentially inserts a space, and that's it. It just checks the options and the text
-     * before the cursor are appropriate before doing it.
-     *
-     * @param settingsValues the current values of the settings.
-     */
-    private void promotePhantomSpace(final SettingsValues settingsValues) {
-        if (settingsValues.shouldInsertSpacesAutomatically()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && !mConnection.textBeforeCursorLooksLikeURL()) {
-            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
-        }
-    }
-
-    /**
      * Do the final processing after a batch input has ended. This commits the word to the editor.
      * @param settingsValues the current values of the settings.
      * @param suggestedWords suggestedWords to use.
@@ -1872,9 +1808,6 @@ public final class InputLogic {
             return;
         }
         mConnection.beginBatchEdit();
-        if (SpaceState.PHANTOM == mSpaceState) {
-            promotePhantomSpace(settingsValues);
-        }
         final SuggestedWordInfo autoCommitCandidate = mSuggestedWords.getAutoCommitCandidate();
         // Commit except the last word for phrase gesture if the top suggestion is eligible for auto
         // commit.
@@ -1983,6 +1916,7 @@ public final class InputLogic {
             }
         }
     }
+
 
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
