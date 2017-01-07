@@ -746,9 +746,8 @@ public final class InputLogic {
 
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
-        if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
-                || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
-            handleSeparatorEvent(event, inputTransaction, handler);
+        if (inputTransaction.mSettingsValues.isWordSeparator(codePoint) || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
+            handleSeparatorEvent(event, inputTransaction);
         } else {
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -846,16 +845,12 @@ public final class InputLogic {
      * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction,
-            // TODO: remove this argument
-            final WubiIME.UIHandler handler) {
+    private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction) {
         final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
-        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
-                && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && wasComposingWord;
+        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
@@ -1849,14 +1844,17 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
-    // TODO: Make this private
-    public void commitTyped(final SettingsValues settingsValues, final String separatorString) {
+    private void commitTyped(final SettingsValues settingsValues, final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
-        final String typedWord = mWordComposer.getTypedWord();
-        if (typedWord.length() > 0) {
-            commitChosenWord(settingsValues, typedWord,
-                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
+        final SuggestedWords suggestedWords = mSuggestedWords;
+        if (suggestedWords.size() <= 1) {
+            final String typedWord = mWordComposer.getTypedWord();
+            if (typedWord.length() > 0) {
+                commitChosenWord(settingsValues, typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
+            }
+            return;
         }
+        commitChosenWord(settingsValues, suggestedWords.getWord(1), LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
     }
 
     /**
