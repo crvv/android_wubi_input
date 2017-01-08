@@ -26,4 +26,5 @@ android {
 dependencies {
     compile "com.android.support:support-v4:25.1.0"
     compile "com.google.code.findbugs:jsr305:3.0.0"
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
