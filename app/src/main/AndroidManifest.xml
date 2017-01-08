@@ -55,6 +55,11 @@
             android:label="@string/title_activity_test"
             android:parentActivityName=".settings.SettingsActivity">
         </activity>
+        <activity
+            android:name=".settings.LicenseActivity"
+            android:label="@string/title_activity_license"
+            android:parentActivityName=".settings.SettingsActivity">
+        </activity>
 
     </application>
 </manifest>

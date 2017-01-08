@@ -27,6 +27,7 @@
     <string name="settings_screen_preferences">振动和声音</string>
     <string name="settings_screen_theme">主题</string>
     <string name="prefs_test">测试</string>
+    <string name="license">开源许可</string>
 
     <string name="vibrate_on_keypress">按键振动</string>
     <string name="sound_on_keypress">按键声音</string>
@@ -34,6 +35,7 @@
     <string name="prefs_keypress_sound_volume_settings">按键音量</string>
 
     <string name="title_activity_test">测试</string>
+    <string name="title_activity_license">开源许可</string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>

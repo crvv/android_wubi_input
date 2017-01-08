@@ -41,6 +41,10 @@
             android:targetClass="com.github.crvv.wubinput.wubi.settings.TestActivity" />
     </Preference>
 
-
+    <Preference android:title="@string/license">
+        <intent
+            android:targetPackage="com.github.crvv.wubinput"
+            android:targetClass="com.github.crvv.wubinput.wubi.settings.LicenseActivity" />
+    </Preference>
 
 </PreferenceScreen>
