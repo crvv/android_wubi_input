@@ -161,6 +161,9 @@ public final class WordComposer {
      * @param event the event to apply. Must not be null.
      */
     public void applyProcessedEvent(final Event event) {
+        if (size() >= MAX_WORD_LENGTH && Character.isLetter(event.mCodePoint)) {
+            reset();
+        }
         mCombinerChain.applyProcessedEvent(event);
         final int primaryCode = event.mCodePoint;
         final int keyX = event.mX;
