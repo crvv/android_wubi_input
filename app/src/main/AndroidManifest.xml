@@ -15,40 +15,45 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.github.crvv.wubinput.wubi">
+          package="com.github.crvv.wubinput.wubi"
+          android:versionCode="1">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
-    <application android:label="@string/ime_name"
-            android:icon="@drawable/ic_launcher_keyboard"
-            android:killAfterRestore="false"
-            android:supportsRtl="true"
-            android:allowBackup="true">
+    <application
+        android:label="@string/ime_name"
+        android:icon="@drawable/ic_launcher_keyboard"
+        android:killAfterRestore="false"
+        android:supportsRtl="true"
+        android:allowBackup="true">
 
-        <service android:name="com.github.crvv.wubinput.wubi.WubiIME"
-                android:label="@string/ime_name"
-                android:permission="android.permission.BIND_INPUT_METHOD">
+        <service
+            android:name="com.github.crvv.wubinput.wubi.WubiIME"
+            android:label="@string/ime_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
-                <action android:name="android.view.InputMethod" />
+                <action android:name="android.view.InputMethod"/>
             </intent-filter>
-            <meta-data android:name="android.view.im"
-                       android:resource="@xml/method" />
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method"/>
         </service>
 
-        <activity android:name="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
-                  android:theme="@style/platformSettingsTheme"
-                  android:label="@string/ime_name"
-                  android:uiOptions="splitActionBarWhenNarrow">
+        <activity
+            android:name="com.github.crvv.wubinput.wubi.settings.SettingsActivity"
+            android:theme="@style/platformSettingsTheme"
+            android:label="@string/ime_name"
+            android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity
             android:name=".settings.TestActivity"
             android:label="@string/title_activity_test"
-            android:parentActivityName=".settings.SettingsActivity" >
+            android:parentActivityName=".settings.SettingsActivity">
         </activity>
 
     </application>
