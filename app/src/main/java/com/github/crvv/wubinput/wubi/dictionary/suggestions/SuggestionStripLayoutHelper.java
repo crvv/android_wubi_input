@@ -173,13 +173,15 @@ final class SuggestionStripLayoutHelper {
             final View divider = mDividerViews.get(i);
             addDivider(stripView, divider);
             x += divider.getMeasuredWidth();
-            wordView.measure(0, 0);
-            x += wordView.getMeasuredWidth();
-            if (x >= stripWidth) {
-                break;
-            }
+
             stripView.addView(wordView);
             setLayoutWeight(wordView);
+            wordView.measure(0, 0);
+            x += wordView.getMeasuredWidth();
+            if (x > stripWidth) {
+                stripView.removeView(wordView);
+                break;
+            }
             i++;
         }
     }
