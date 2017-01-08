@@ -25,14 +25,12 @@ import android.widget.FrameLayout;
 
 import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
 import com.github.crvv.wubinput.keyboard.MainKeyboardView;
-import com.github.crvv.wubinput.wubi.dictionary.suggestions.MoreSuggestionsView;
 import com.github.crvv.wubinput.wubi.dictionary.suggestions.SuggestionStripView;
 
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();
     private MainKeyboardView mMainKeyboardView;
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
-    private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
     private MotionEventForwarder<?, ?> mActiveForwarder;
 
     public InputView(final Context context, final AttributeSet attrs) {
@@ -45,8 +43,6 @@ public final class InputView extends FrameLayout {
                 (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
         mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
         mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
-                mMainKeyboardView, suggestionStripView);
-        mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
                 mMainKeyboardView, suggestionStripView);
     }
 
@@ -77,13 +73,6 @@ public final class InputView extends FrameLayout {
         // {@link SuggestionStripView}.
         if (mKeyboardTopPaddingForwarder.onInterceptTouchEvent(x, y, me)) {
             mActiveForwarder = mKeyboardTopPaddingForwarder;
-            return true;
-        }
-
-        // To cancel {@link MoreSuggestionsView}, we should intercept a touch event to
-        // {@link MainKeyboardView} and dismiss the {@link MoreSuggestionsView}.
-        if (mMoreSuggestionsViewCanceler.onInterceptTouchEvent(x, y, me)) {
-            mActiveForwarder = mMoreSuggestionsViewCanceler;
             return true;
         }
 
@@ -218,32 +207,6 @@ public final class InputView extends FrameLayout {
                 return Math.min(translatedY, mEventReceivingRect.height() - 1);
             }
             return translatedY;
-        }
-    }
-
-    /**
-     * This class forwards {@link MotionEvent}s happened in the {@link MainKeyboardView} to
-     * {@link SuggestionStripView} when the {@link MoreSuggestionsView} is showing.
-     * {@link SuggestionStripView} dismisses {@link MoreSuggestionsView} when it receives any event
-     * outside of it.
-     */
-    private static class MoreSuggestionsViewCanceler
-            extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
-        public MoreSuggestionsViewCanceler(final MainKeyboardView mainKeyboardView,
-                final SuggestionStripView suggestionStripView) {
-            super(mainKeyboardView, suggestionStripView);
-        }
-
-        @Override
-        protected boolean needsToForward(final int x, final int y) {
-            return mReceiverView.isShowingMoreSuggestionPanel() && mEventSendingRect.contains(x, y);
-        }
-
-        @Override
-        protected void onForwardingEvent(final MotionEvent me) {
-            if (me.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                mReceiverView.dismissMoreSuggestionsPanel();
-            }
         }
     }
 }

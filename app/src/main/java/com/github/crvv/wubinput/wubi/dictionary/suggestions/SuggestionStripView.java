@@ -17,42 +17,33 @@
 package com.github.crvv.wubinput.wubi.dictionary.suggestions;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.crvv.wubinput.accessibility.AccessibilityUtils;
-import com.github.crvv.wubinput.keyboard.Keyboard;
 import com.github.crvv.wubinput.keyboard.MainKeyboardView;
-import com.github.crvv.wubinput.keyboard.MoreKeysPanel;
 import com.github.crvv.wubinput.wubi.AudioAndHapticFeedbackManager;
 import com.github.crvv.wubinput.wubi.Constants;
 import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords;
 import com.github.crvv.wubinput.wubi.dictionary.SuggestedWords.SuggestedWordInfo;
 import com.github.crvv.wubinput.wubi.define.DebugFlags;
-import com.github.crvv.wubinput.wubi.dictionary.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.github.crvv.wubinput.wubi.utils.ImportantNoticeUtils;
 
 import java.util.ArrayList;
 
-public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
-        OnLongClickListener {
+public final class SuggestionStripView extends RelativeLayout implements OnClickListener {
     public interface Listener {
         void pickSuggestionManually(SuggestedWordInfo word);
         void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
@@ -132,7 +123,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
             word.setOnClickListener(this);
-            word.setOnLongClickListener(this);
             mWordViews.add(word);
             final View divider = inflater.inflate(R.layout.suggestion_divider, null);
             mDividerViews.add(divider);
@@ -144,17 +134,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mLayoutHelper = new SuggestionStripLayoutHelper(
                 context, attrs, defStyle, mWordViews, mDividerViews, null);
 
-        mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
-        mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
-                .findViewById(R.id.more_suggestions_view);
-        mMoreSuggestionsBuilder = new MoreSuggestions.Builder(context, mMoreSuggestionsView);
-
-        final Resources res = context.getResources();
-        mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
-                R.dimen.config_more_suggestions_modal_tolerance);
-        mMoreSuggestionsSlidingDetector = new GestureDetector(
-                context, mMoreSuggestionsSlidingListener);
-
         final TypedArray keyboardAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
         keyboardAttr.recycle();
@@ -162,7 +141,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     /**
      * A connection back to the input method.
-     * @param listener
      */
     public void setListener(final Listener listener, final View inputView) {
         mListener = listener;
@@ -178,8 +156,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         clear();
         mStripVisibilityGroup.setLayoutDirection(isRtlLanguage);
         mSuggestedWords = suggestedWords;
-        mStartIndexOfMoreSuggestions = mLayoutHelper.layoutAndReturnStartIndexOfMoreSuggestions(
-                mSuggestedWords, mSuggestionsStrip, this);
+        mLayoutHelper.layoutSuggestions(mSuggestedWords, mSuggestionsStrip, this);
         mStripVisibilityGroup.showSuggestionsStrip();
     }
 
@@ -202,9 +179,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (TextUtils.isEmpty(importantNoticeTitle)) {
             return false;
         }
-        if (isShowingMoreSuggestionPanel()) {
-            dismissMoreSuggestionsPanel();
-        }
         mStripVisibilityGroup.showImportantNoticeStrip();
         return true;
     }
@@ -212,142 +186,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void clear() {
         mSuggestionsStrip.removeAllViews();
         mStripVisibilityGroup.showSuggestionsStrip();
-        dismissMoreSuggestionsPanel();
     }
-
-    private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
-        @Override
-        public void onSuggestionSelected(final SuggestedWordInfo wordInfo) {
-            mListener.pickSuggestionManually(wordInfo);
-            dismissMoreSuggestionsPanel();
-        }
-
-        @Override
-        public void onCancelInput() {
-            dismissMoreSuggestionsPanel();
-        }
-    };
-
-    private final MoreKeysPanel.Controller mMoreSuggestionsController =
-            new MoreKeysPanel.Controller() {
-        @Override
-        public void onDismissMoreKeysPanel() {
-            mMainKeyboardView.onDismissMoreKeysPanel();
-        }
-
-        @Override
-        public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
-            mMainKeyboardView.onShowMoreKeysPanel(panel);
-        }
-
-        @Override
-        public void onCancelMoreKeysPanel() {
-            dismissMoreSuggestionsPanel();
-        }
-    };
-
-    public boolean isShowingMoreSuggestionPanel() {
-        return mMoreSuggestionsView.isShowingInParent();
-    }
-
-    public void dismissMoreSuggestionsPanel() {
-        mMoreSuggestionsView.dismissMoreKeysPanel();
-    }
-
-    @Override
-    public boolean onLongClick(final View view) {
-        AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
-                Constants.NOT_A_CODE, this);
-        return showMoreSuggestions();
-    }
-
-    boolean showMoreSuggestions() {
-        final Keyboard parentKeyboard = mMainKeyboardView.getKeyboard();
-        if (parentKeyboard == null) {
-            return false;
-        }
-        final SuggestionStripLayoutHelper layoutHelper = mLayoutHelper;
-        if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions) {
-            return false;
-        }
-        // Dismiss another {@link MoreKeysPanel} that may be being showed, for example
-        // {@link MoreKeysKeyboardView}.
-        mMainKeyboardView.onDismissMoreKeysPanel();
-        // Dismiss all key previews and sliding key input preview that may be being showed.
-        mMainKeyboardView.dismissAllKeyPreviews();
-        mMainKeyboardView.dismissSlidingKeyInputPreview();
-        final int stripWidth = getWidth();
-        final View container = mMoreSuggestionsContainer;
-        final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
-        final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-        builder.layout(mSuggestedWords, mStartIndexOfMoreSuggestions, maxWidth,
-                (int)(maxWidth * layoutHelper.mMinMoreSuggestionsWidth),
-                layoutHelper.getMaxMoreSuggestionsRow(), parentKeyboard);
-        mMoreSuggestionsView.setKeyboard(builder.build());
-        container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
-        final int pointX = stripWidth / 2;
-        final int pointY = -layoutHelper.mMoreSuggestionsBottomGap;
-        moreKeysPanel.showMoreKeysPanel(this, mMoreSuggestionsController, pointX, pointY,
-                mMoreSuggestionsListener);
-        mOriginX = mLastX;
-        mOriginY = mLastY;
-        for (int i = 0; i < mStartIndexOfMoreSuggestions; i++) {
-            mWordViews.get(i).setPressed(false);
-        }
-        return true;
-    }
-
-    // Working variables for {@link onInterceptTouchEvent(MotionEvent)} and
-    // {@link onTouchEvent(MotionEvent)}.
-    private int mLastX;
-    private int mLastY;
-    private int mOriginX;
-    private int mOriginY;
-    private final int mMoreSuggestionsModalTolerance;
-    private boolean mNeedsToTransformTouchEventToHoverEvent;
-    private boolean mIsDispatchingHoverEventToMoreSuggestions;
-    private final GestureDetector mMoreSuggestionsSlidingDetector;
-    private final GestureDetector.OnGestureListener mMoreSuggestionsSlidingListener =
-            new GestureDetector.SimpleOnGestureListener() {
-        @Override
-        public boolean onScroll(MotionEvent down, MotionEvent me, float deltaX, float deltaY) {
-            final float dy = me.getY() - down.getY();
-            if (deltaY > 0 && dy < 0) {
-                return showMoreSuggestions();
-            }
-            return false;
-        }
-    };
 
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent me) {
-        if (!mMoreSuggestionsView.isShowingInParent()) {
-            mLastX = (int)me.getX();
-            mLastY = (int)me.getY();
-            return mMoreSuggestionsSlidingDetector.onTouchEvent(me);
-        }
-
-        final int action = me.getAction();
-        final int index = me.getActionIndex();
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-        if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
-                || mOriginY - y >= mMoreSuggestionsModalTolerance) {
-            // Decided to be in the sliding suggestion mode only when the touch point has been moved
-            // upward. Further {@link MotionEvent}s will be delivered to
-            // {@link #onTouchEvent(MotionEvent)}.
-            mNeedsToTransformTouchEventToHoverEvent =
-                    AccessibilityUtils.getInstance().isTouchExplorationEnabled();
-            mIsDispatchingHoverEventToMoreSuggestions = false;
-            return true;
-        }
-
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
-            // Decided to be in the modal input mode.
-            mMoreSuggestionsView.adjustVerticalCorrectionForModalMode();
-        }
         return false;
     }
 
@@ -359,44 +201,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onTouchEvent(final MotionEvent me) {
-        // In the sliding input mode. {@link MotionEvent} should be forwarded to
-        // {@link MoreSuggestionsView}.
-        final int index = me.getActionIndex();
-        final int x = mMoreSuggestionsView.translateX((int)me.getX(index));
-        final int y = mMoreSuggestionsView.translateY((int)me.getY(index));
-        me.setLocation(x, y);
-        if (!mNeedsToTransformTouchEventToHoverEvent) {
-            mMoreSuggestionsView.onTouchEvent(me);
-            return true;
-        }
-        // In sliding suggestion mode with accessibility mode on, a touch event should be
-        // transformed to a hover event.
-        final int width = mMoreSuggestionsView.getWidth();
-        final int height = mMoreSuggestionsView.getHeight();
-        final boolean onMoreSuggestions = (x >= 0 && x < width && y >= 0 && y < height);
-        if (!onMoreSuggestions && !mIsDispatchingHoverEventToMoreSuggestions) {
-            // Just drop this touch event because dispatching hover event isn't started yet and
-            // the touch event isn't on {@link MoreSuggestionsView}.
-            return true;
-        }
         final int hoverAction;
-        if (onMoreSuggestions && !mIsDispatchingHoverEventToMoreSuggestions) {
-            // Transform this touch event to a hover enter event and start dispatching a hover
-            // event to {@link MoreSuggestionsView}.
-            mIsDispatchingHoverEventToMoreSuggestions = true;
-            hoverAction = MotionEvent.ACTION_HOVER_ENTER;
-        } else if (me.getActionMasked() == MotionEvent.ACTION_UP) {
-            // Transform this touch event to a hover exit event and stop dispatching a hover event
-            // after this.
-            mIsDispatchingHoverEventToMoreSuggestions = false;
-            mNeedsToTransformTouchEventToHoverEvent = false;
+        if (me.getActionMasked() == MotionEvent.ACTION_UP) {
             hoverAction = MotionEvent.ACTION_HOVER_EXIT;
         } else {
             // Transform this touch event to a hover move event.
             hoverAction = MotionEvent.ACTION_HOVER_MOVE;
         }
         me.setAction(hoverAction);
-        mMoreSuggestionsView.onHoverEvent(me);
         return true;
     }
 
@@ -422,7 +234,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        dismissMoreSuggestionsPanel();
     }
 
     @Override
