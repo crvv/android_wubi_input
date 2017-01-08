@@ -18,11 +18,7 @@ package com.github.crvv.wubinput.wubi.about;
 
 import android.app.Fragment;
 
-/**
- * Dummy class of AboutPreferences. Never use this.
- */
 public final class AboutPreferences extends Fragment {
-    private AboutPreferences() {
-        // Prevents this from being instantiated
+    public AboutPreferences() {
     }
 }
