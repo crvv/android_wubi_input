@@ -717,16 +717,6 @@ public final class InputLogic {
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint) || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             handleSeparatorEvent(event, inputTransaction, handler);
         } else {
-            if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
-                if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-                    // If we are in the middle of a recorrection, we need to commit the recorrection
-                    // first so that we can insert the character at the current cursor position.
-                    resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                            mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-                } else {
-                    commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
-                }
-            }
             handleNonSeparatorEvent(event, inputTransaction.mSettingsValues, inputTransaction);
         }
     }
@@ -746,23 +736,6 @@ public final class InputLogic {
         // not the same.
         boolean isComposingWord = mWordComposer.isComposingWord();
 
-        // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
-        // See onStartBatchInput() to see how to do it.
-        if (SpaceState.PHANTOM == inputTransaction.mSpaceState
-                && !settingsValues.isWordConnector(codePoint)) {
-            if (isComposingWord) {
-                // Sanity check
-                throw new RuntimeException("Should not be composing here");
-            }
-        }
-
-        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-            // If we are in the middle of a recorrection, we need to commit the recorrection
-            // first so that we can insert the character at the current cursor position.
-            resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-            isComposingWord = false;
-        }
         // We want to find out whether to start composing a new word with this character. If so,
         // we need to reset the composing state and switch isComposingWord. The order of the
         // tests is important for good performance.
@@ -772,11 +745,7 @@ public final class InputLogic {
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
         // We never go into composing state if suggestions are not requested.
-                && settingsValues.needsToLookupSuggestions() &&
-        // In languages with spaces, we only start composing a word when we are not already
-        // touching a word. In languages without spaces, the above conditions are sufficient.
-                (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)
-                        || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces)) {
+                && settingsValues.needsToLookupSuggestions()) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a word connector. The idea here is, word connectors are not
             // separators and they should be treated as normal characters, except in the first
@@ -786,23 +755,13 @@ public final class InputLogic {
             // when we commit this one, if we ever do; if on the other hand we backspace
             // it entirely and resume suggestions on the previous word, we'd like to still
             // have touch coordinates for it.
-            resetComposingState(false /* alsoResetLastComposedWord */);
+            resetComposingState(false);
         }
         if (isComposingWord) {
             mWordComposer.applyProcessedEvent(event);
-            // If it's the first letter, make note of auto-caps state
-            if (mWordComposer.isSingleLetter()) {
-                mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
-            }
             setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event, inputTransaction);
-
-            if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
-                mSpaceState = SpaceState.WEAK;
-            } else {
-                sendKeyCodePoint(settingsValues, codePoint);
-            }
+            sendKeyCodePoint(settingsValues, codePoint);
         }
         inputTransaction.setRequiresUpdateSuggestions();
     }
@@ -1588,17 +1547,7 @@ public final class InputLogic {
             sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0);
             return;
         }
-
-        // TODO: we should do this also when the editor has TYPE_NULL
-        if (Constants.CODE_ENTER == codePoint && settingsValues.isBeforeJellyBean()) {
-            // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
-            // a hardware keyboard event on pressing enter or delete. This is bad for many
-            // reasons (there are race conditions with commits) but some applications are
-            // relying on this behavior so we continue to support it for older apps.
-            sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
-        } else {
-            mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
-        }
+        mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
     }
 
     /**

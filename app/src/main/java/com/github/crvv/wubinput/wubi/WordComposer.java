@@ -48,7 +48,6 @@ public final class WordComposer {
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
-    private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
     // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
@@ -79,7 +78,6 @@ public final class WordComposer {
     public WordComposer() {
         mCombinerChain = new CombinerChain("");
         mEvents = new ArrayList<>();
-        mAutoCorrection = null;
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
@@ -107,7 +105,6 @@ public final class WordComposer {
     public void reset() {
         mCombinerChain.reset();
         mEvents.clear();
-        mAutoCorrection = null;
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsOnlyFirstCharCapitalized = false;
@@ -194,7 +191,6 @@ public final class WordComposer {
             if (Character.isUpperCase(primaryCode)) mCapsCount++;
             if (Character.isDigit(primaryCode)) mDigitsCount++;
         }
-        mAutoCorrection = null;
     }
 
     public void setCursorPositionWithinWord(final int posWithinWord) {
@@ -371,20 +367,6 @@ public final class WordComposer {
     }
 
     /**
-     * Sets the auto-correction for this word.
-     */
-    public void setAutoCorrection(final String correction) {
-        mAutoCorrection = correction;
-    }
-
-    /**
-     * @return the auto-correction for this word, or null if none.
-     */
-    public String getAutoCorrectionOrNull() {
-        return mAutoCorrection;
-    }
-
-    /**
      * @return whether we started composing this word by resuming suggestion on an existing string
      */
     public boolean isResumed() {
@@ -415,24 +397,10 @@ public final class WordComposer {
         mIsOnlyFirstCharCapitalized = false;
         mCapitalizedMode = CAPS_MODE_OFF;
         refreshTypedWordCache();
-        mAutoCorrection = null;
         mCursorPositionWithinWord = 0;
         mIsResumed = false;
         mRejectedBatchModeSuggestion = null;
         return lastComposedWord;
-    }
-
-    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
-        mEvents.clear();
-        Collections.copy(mEvents, lastComposedWord.mEvents);
-        mInputPointers.set(lastComposedWord.mInputPointers);
-        mCombinerChain.reset();
-        refreshTypedWordCache();
-        mCapitalizedMode = lastComposedWord.mCapitalizedMode;
-        mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
-        mCursorPositionWithinWord = mCodePointSize;
-        mRejectedBatchModeSuggestion = null;
-        mIsResumed = true;
     }
 
     public boolean isBatchMode() {
