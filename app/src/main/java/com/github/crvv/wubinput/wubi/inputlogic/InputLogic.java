@@ -757,6 +757,9 @@ public final class InputLogic {
             resetComposingState(false);
         }
         if (isComposingWord) {
+            if (mWordComposer.size() >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
+                commitFirstSuggestedWord(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
+            }
             mWordComposer.applyProcessedEvent(event);
             setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
