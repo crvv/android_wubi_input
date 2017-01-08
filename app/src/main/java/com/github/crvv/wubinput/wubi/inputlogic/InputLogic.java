@@ -100,7 +100,6 @@ public final class InputLogic {
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
     private boolean mIsAutoCorrectionIndicatorOn;
-    private long mDoubleSpacePeriodCountdownStart;
 
     /**
      * Create a new instance of the input logic.
@@ -154,7 +153,6 @@ public final class InputLogic {
                 mConnection.requestCursorUpdates(true /* enableMonitor */,
                         true /* requestImmediateCallback */);
             }
-//            mTextDecorator.reset();
         }
     }
 
@@ -1031,88 +1029,6 @@ public final class InputLogic {
     }
 
     public void cancelDoubleSpacePeriodCountdown() {
-        mDoubleSpacePeriodCountdownStart = 0;
-    }
-
-    public boolean isDoubleSpacePeriodCountdownActive(final InputTransaction inputTransaction) {
-        return inputTransaction.mTimestamp - mDoubleSpacePeriodCountdownStart
-                < inputTransaction.mSettingsValues.mDoubleSpacePeriodTimeout;
-    }
-
-    /**
-     * Apply the double-space-to-period transformation if applicable.
-     *
-     * The double-space-to-period transformation means that we replace two spaces with a
-     * period-space sequence of characters. This typically happens when the user presses space
-     * twice in a row quickly.
-     * This method will check that the double-space-to-period is active in settings, that the
-     * two spaces have been input close enough together, that the typed character is a space
-     * and that the previous character allows for the transformation to take place. If all of
-     * these conditions are fulfilled, this method applies the transformation and returns true.
-     * Otherwise, it does nothing and returns false.
-     *
-     * @param event The event to handle.
-     * @param inputTransaction The transaction in progress.
-     * @return true if we applied the double-space-to-period transformation, false otherwise.
-     */
-    private boolean tryPerformDoubleSpacePeriod(final Event event,
-            final InputTransaction inputTransaction) {
-        // Check the setting, the typed character and the countdown. If any of the conditions is
-        // not fulfilled, return false.
-        if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod
-                || Constants.CODE_SPACE != event.mCodePoint
-                || !isDoubleSpacePeriodCountdownActive(inputTransaction)) {
-            return false;
-        }
-        // We only do this when we see one space and an accepted code point before the cursor.
-        // The code point may be a surrogate pair but the space may not, so we need 3 chars.
-        final CharSequence lastTwo = mConnection.getTextBeforeCursor(3, 0);
-        if (null == lastTwo) return false;
-        final int length = lastTwo.length();
-        if (length < 2) return false;
-        if (lastTwo.charAt(length - 1) != Constants.CODE_SPACE) return false;
-        // We know there is a space in pos -1, and we have at least two chars. If we have only two
-        // chars, isSurrogatePairs can't return true as charAt(1) is a space, so this is fine.
-        final int firstCodePoint =
-                Character.isSurrogatePair(lastTwo.charAt(0), lastTwo.charAt(1)) ?
-                        Character.codePointAt(lastTwo, length - 3) : lastTwo.charAt(length - 2);
-        if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
-            cancelDoubleSpacePeriodCountdown();
-            mConnection.deleteSurroundingText(1, 0);
-            final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                    .mSentenceSeparatorAndSpace;
-            mConnection.commitText(textToInsert, 1);
-            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-            inputTransaction.setRequiresUpdateSuggestions();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether this code point can be followed by the double-space-to-period transformation.
-     *
-     * See #maybeDoubleSpaceToPeriod for details.
-     * Generally, most word characters can be followed by the double-space-to-period transformation,
-     * while most punctuation can't. Some punctuation however does allow for this to take place
-     * after them, like the closing parenthesis for example.
-     *
-     * @param codePoint the code point after which we may want to apply the transformation
-     * @return whether it's fine to apply the transformation after this code point.
-     */
-    private static boolean canBeFollowedByDoubleSpacePeriod(final int codePoint) {
-        // TODO: This should probably be a blacklist rather than a whitelist.
-        // TODO: This should probably be language-dependant...
-        return Character.isLetterOrDigit(codePoint)
-                || codePoint == Constants.CODE_SINGLE_QUOTE
-                || codePoint == Constants.CODE_DOUBLE_QUOTE
-                || codePoint == Constants.CODE_CLOSING_PARENTHESIS
-                || codePoint == Constants.CODE_CLOSING_SQUARE_BRACKET
-                || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET
-                || codePoint == Constants.CODE_PLUS
-                || codePoint == Constants.CODE_PERCENT
-                || Character.getType(codePoint) == Character.OTHER_SYMBOL;
     }
 
     /**
@@ -1613,24 +1529,6 @@ public final class InputLogic {
     }
 
     /**
-     * Make a {@link com.github.crvv.wubinput.wubi.dictionary.SuggestedWords} object containing a typed word
-     * and obsolete suggestions.
-     * See {@link com.github.crvv.wubinput.wubi.dictionary.SuggestedWords#getTypedWordAndPreviousSuggestions(
-     *      String, com.github.crvv.wubinput.wubi.dictionary.SuggestedWords)}.
-     * @param typedWord The typed word as a string.
-     * @param previousSuggestedWords The previously suggested words.
-     * @return Obsolete suggestions with the newly typed word.
-     */
-    private SuggestedWords retrieveOlderSuggestions(final String typedWord,
-            final SuggestedWords previousSuggestedWords) {
-        final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, previousSuggestedWords);
-        return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
-                false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
-                true /* isObsoleteSuggestions */, previousSuggestedWords.mInputStyle);
-    }
-
-    /**
      * Gets a chunk of text with or the auto-correction indicator underline span as appropriate.
      *
      * This method looks at the old state of the auto-correction indicator to put or not put
@@ -1932,29 +1830,6 @@ public final class InputLogic {
         }
         mConnection.setComposingText(composingTextToBeSet, newCursorPosition);
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Following methods are tentatively placed in this class for the integration with
-    // TextDecorator.
-    // TODO: Decouple things that are not related to the input logic.
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Sets the UI operator for {@link TextDecorator}.
-     * @param uiOperator the UI operator which should be associated with {@link TextDecorator}.
-     */
-//    public void setTextDecoratorUi(final TextDecoratorUiOperator uiOperator) {
-//        mTextDecorator.setUiOperator(uiOperator);
-//    }
-
-    /**
-     * Must be called from {@link InputMethodService#onUpdateCursorAnchorInfo(CursorAnchorInfo)} is
-     * called.
-     * @param info The wrapper object with which we can access cursor/anchor info.
-     */
-//    public void onUpdateCursorAnchorInfo(final CursorAnchorInfoCompatWrapper info) {
-//        mTextDecorator.onUpdateCursorAnchorInfo(info);
-//    }
 
     /**
      * Must be called when {@link InputMethodService#updateFullscreenMode} is called.
