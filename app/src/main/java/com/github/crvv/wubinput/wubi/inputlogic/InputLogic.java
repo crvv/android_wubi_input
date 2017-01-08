@@ -819,38 +819,32 @@ public final class InputLogic {
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
-        final boolean shouldAvoidSendingCode = (codePoint == Constants.CODE_SPACE || codePoint == Constants.CODE_ENTER) && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         }
-        // isComposingWord() may have changed since we stored wasComposing
-        if (mWordComposer.isComposingWord()) {
+        if (codePoint == Constants.CODE_SPACE) {
+            commitFirstSuggestedWord(settingsValues, StringUtils.newSingleCodePointString(codePoint));
+        }
+        if (codePoint == Constants.CODE_ENTER) {
             commitTyped(settingsValues, StringUtils.newSingleCodePointString(codePoint));
         }
 
         final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event, inputTransaction);
 
-        final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
-                && mConnection.isInsideDoubleQuoteOrAfterDigit();
+        final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint && mConnection.isInsideDoubleQuoteOrAfterDigit();
 
         if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
             mSpaceState = SpaceState.SWAP_PUNCTUATION;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-        } else if (Constants.CODE_SPACE == codePoint) {
-            mSpaceState = SpaceState.WEAK;
-
-            startDoubleSpacePeriodCountdown(inputTransaction);
+        } else if (codePoint == Constants.CODE_SPACE || codePoint == Constants.CODE_ENTER) {
             if (wasComposingWord || mSuggestedWords.isEmpty()) {
                 inputTransaction.setRequiresUpdateSuggestions();
             }
-
-            if (!shouldAvoidSendingCode) {
-                sendKeyCodePoint(settingsValues, codePoint);
-            }
-        } else {
+        }
+        else {
             if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
                     && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
@@ -1053,28 +1047,12 @@ public final class InputLogic {
     private boolean tryStripSpaceAndReturnWhetherShouldSwapInstead(final Event event,
             final InputTransaction inputTransaction) {
         final int codePoint = event.mCodePoint;
-        final boolean isFromSuggestionStrip = event.isSuggestionStripPress();
         if (Constants.CODE_ENTER == codePoint &&
                 SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
             mConnection.removeTrailingSpace();
             return false;
         }
-        if ((SpaceState.WEAK == inputTransaction.mSpaceState
-                || SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState)
-                && isFromSuggestionStrip) {
-            if (inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint)) {
-                return false;
-            }
-            if (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)) {
-                return true;
-            }
-            mConnection.removeTrailingSpace();
-        }
         return false;
-    }
-
-    public void startDoubleSpacePeriodCountdown(final InputTransaction inputTransaction) {
-        mDoubleSpacePeriodCountdownStart = inputTransaction.mTimestamp;
     }
 
     public void cancelDoubleSpacePeriodCountdown() {
@@ -1815,15 +1793,10 @@ public final class InputLogic {
      */
     private void commitTyped(final SettingsValues settingsValues, final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
-        final SuggestedWords suggestedWords = mSuggestedWords;
-        if (suggestedWords.size() <= 1) {
-            final String typedWord = mWordComposer.getTypedWord();
-            if (typedWord.length() > 0) {
-                commitChosenWord(settingsValues, typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
-            }
-            return;
+        final String typedWord = mWordComposer.getTypedWord();
+        if (typedWord.length() > 0) {
+            commitChosenWord(settingsValues, typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
         }
-        commitChosenWord(settingsValues, suggestedWords.getWord(1), LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
     }
 
     /**
@@ -1842,46 +1815,13 @@ public final class InputLogic {
      * @param settingsValues the current value of the settings.
      * @param separator the separator that's causing the commit to happen.
      */
-    private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
-            final String separator,
-            // TODO: Remove this argument.
-            final WubiIME.UIHandler handler) {
-        // Complete any pending suggestions query first
-        if (handler.hasPendingUpdateSuggestions()) {
-            handler.cancelUpdateSuggestionStrip();
-            // To know the input style here, we should retrieve the in-flight "update suggestions"
-            // message and read its arg1 member here. However, the Handler class does not let
-            // us retrieve this message, so we can't do that. But in fact, we notice that
-            // we only ever come here when the input style was typing. In the case of batch
-            // input, we update the suggestions synchronously when the tail batch comes. Likewise
-            // for application-specified completions. As for recorrections, we never auto-correct,
-            // so we don't come here either. Hence, the input style is necessarily
-            // INPUT_STYLE_TYPING.
-            performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
+    private void commitFirstSuggestedWord(final SettingsValues settingsValues, final String separator) {
+        if (!mWordComposer.isComposingWord()) return;
+        final SuggestedWords suggestedWords = mSuggestedWords;
+        if (suggestedWords.size() <= 1) {
+            return;
         }
-        final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
-        final String typedWord = mWordComposer.getTypedWord();
-        final String autoCorrection = (typedAutoCorrection != null)
-                ? typedAutoCorrection : typedWord;
-        if (autoCorrection != null) {
-            if (TextUtils.isEmpty(typedWord)) {
-                throw new RuntimeException("We have an auto-correction but the typed word "
-                        + "is empty? Impossible! I must commit suicide.");
-            }
-            commitChosenWord(settingsValues, autoCorrection,
-                    LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
-            if (!typedWord.equals(autoCorrection)) {
-                // This will make the correction flash for a short while as a visual clue
-                // to the user that auto-correction happened. It has no other effect; in particular
-                // note that this won't affect the text inside the text field AT ALL: it only makes
-                // the segment of text starting at the supplied index and running for the length
-                // of the auto-correction flash. At this moment, the "typedWord" argument is
-                // ignored by TextView.
-                mConnection.commitCorrection(new CorrectionInfo(
-                        mConnection.getExpectedSelectionEnd() - autoCorrection.length(),
-                        typedWord, autoCorrection));
-            }
-        }
+        commitChosenWord(settingsValues, suggestedWords.getWord(1), LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separator);
     }
 
 
