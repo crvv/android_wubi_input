@@ -27,7 +27,6 @@ import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 
@@ -228,7 +227,7 @@ public final class InputLogic {
                 getActualCapsMode(settingsValues, keyboardShiftMode));
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(settingsValues, rawText, handler);
+            commitFirstSuggestedWord(settingsValues, rawText);
         } else {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
@@ -464,8 +463,7 @@ public final class InputLogic {
                 // tapping probably is that the word you intend to type is not in the dictionary,
                 // so we do not attempt to correct, on the assumption that if that was a dictionary
                 // word, the user would probably have gestured instead.
-                commitCurrentAutoCorrection(settingsValues, LastComposedWord.NOT_A_SEPARATOR,
-                        handler);
+                commitFirstSuggestedWord(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
             } else {
                 commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
             }
@@ -544,36 +542,8 @@ public final class InputLogic {
                 SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
     }
 
-    // TODO: on the long term, this method should become private, but it will be difficult.
-    // Especially, how do we deal with InputMethodService.onDisplayCompletions?
-    public void setSuggestedWords(final SuggestedWords suggestedWords,
-            final SettingsValues settingsValues, final WubiIME.UIHandler handler) {
-        if (SuggestedWords.EMPTY != suggestedWords) {
-            final String autoCorrection;
-            if (suggestedWords.mWillAutoCorrect) {
-                autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-            } else {
-                // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
-                // because it may differ from mWordComposer.mTypedWord.
-                autoCorrection = suggestedWords.mTypedWord;
-            }
-            mWordComposer.setAutoCorrection(autoCorrection);
-        }
+    public void setSuggestedWords(final SuggestedWords suggestedWords, final SettingsValues settingsValues) {
         mSuggestedWords = suggestedWords;
-        final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
-
-        // Put a blue underline to a word in TextView which will be auto-corrected.
-        if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
-                && mWordComposer.isComposingWord()) {
-            mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
-            final CharSequence textWithUnderline =
-                    getTextWithUnderline(mWordComposer.getTypedWord());
-            // TODO: when called from an updateSuggestionStrip() call that results from a posted
-            // message, this is called outside any batch edit. Potentially, this may result in some
-            // janky flickering of the screen, although the display speed makes it unlikely in
-            // the practice.
-            setComposingTextInternal(textWithUnderline, 1);
-        }
     }
 
     /**
@@ -747,7 +717,7 @@ public final class InputLogic {
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint) || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
-            handleSeparatorEvent(event, inputTransaction);
+            handleSeparatorEvent(event, inputTransaction, handler);
         } else {
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -828,8 +798,7 @@ public final class InputLogic {
             }
             setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
-                    inputTransaction);
+            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event, inputTransaction);
 
             if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
@@ -845,7 +814,7 @@ public final class InputLogic {
      * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction) {
+    private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction, WubiIME.UIHandler handler) {
         final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();

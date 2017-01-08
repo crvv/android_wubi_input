@@ -1297,7 +1297,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        mInputLogic.setSuggestedWords(suggestedWords, currentSettingsValues, mHandler);
+        mInputLogic.setSuggestedWords(suggestedWords, currentSettingsValues);
         // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
             return;
