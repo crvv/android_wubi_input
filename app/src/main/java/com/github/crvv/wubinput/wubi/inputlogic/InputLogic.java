@@ -850,7 +850,7 @@ public final class InputLogic {
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
-        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint && wasComposingWord;
+        final boolean shouldAvoidSendingCode = (codePoint == Constants.CODE_SPACE || codePoint == Constants.CODE_ENTER) && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
