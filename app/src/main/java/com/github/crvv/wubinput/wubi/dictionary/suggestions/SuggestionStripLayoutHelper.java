@@ -172,16 +172,16 @@ final class SuggestionStripLayoutHelper {
         for (TextView wordView: mWordViews) {
             if (i != 0) {
                 final View divider = mDividerViews.get(i);
-                // Add divider if this isn't the left most suggestion in suggestions strip.
                 addDivider(stripView, divider);
                 x += divider.getMeasuredWidth();
             }
-            stripView.addView(wordView);
-            setLayoutWeight(wordView, 0, ViewGroup.LayoutParams.MATCH_PARENT);
+            wordView.measure(0, 0);
             x += wordView.getMeasuredWidth();
-            if (x > stripWidth) {
+            if (x >= stripWidth) {
                 break;
             }
+            stripView.addView(wordView);
+            setLayoutWeight(wordView);
             i++;
         }
     }
@@ -204,13 +204,13 @@ final class SuggestionStripLayoutHelper {
         }
     }
 
-    private static void setLayoutWeight(final View v, final float weight, final int height) {
+    private static void setLayoutWeight(final View v) {
         final ViewGroup.LayoutParams lp = v.getLayoutParams();
         if (lp instanceof LinearLayout.LayoutParams) {
             final LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
-            llp.weight = weight;
+            llp.weight = 0;
             llp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            llp.height = height;
+            llp.height = ViewGroup.LayoutParams.MATCH_PARENT;
         }
     }
 }
