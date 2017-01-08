@@ -1632,10 +1632,11 @@ public final class InputLogic {
     private void commitFirstSuggestedWord(final SettingsValues settingsValues, final String separator) {
         if (!mWordComposer.isComposingWord()) return;
         final SuggestedWords suggestedWords = mSuggestedWords;
-        if (suggestedWords.size() <= 1) {
-            return;
+        String wordToCommit = "";
+        if (suggestedWords.size() > 1) {
+            wordToCommit = suggestedWords.getWord(1);
         }
-        commitChosenWord(settingsValues, suggestedWords.getWord(1), LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separator);
+        commitChosenWord(settingsValues, wordToCommit, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separator);
     }
 
 
