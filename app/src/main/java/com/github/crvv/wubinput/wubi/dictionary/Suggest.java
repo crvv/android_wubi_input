@@ -143,8 +143,7 @@ public final class Suggest {
 
         // We allow auto-correction if we have a whitelisted word, or if the word had more than
         // one char and was not suggested.
-        final boolean allowsToBeAutoCorrected = (null != whitelistedWord)
-                || (consideredWord.length() > 1 && !didRemoveTypedWord);
+        final boolean allowsToBeAutoCorrected = (null != whitelistedWord) || (consideredWord.length() > 1 && !didRemoveTypedWord);
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because

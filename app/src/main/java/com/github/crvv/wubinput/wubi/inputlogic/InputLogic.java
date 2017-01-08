@@ -1175,15 +1175,7 @@ public final class InputLogic {
                 new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        final String typedWord = mWordComposer.getTypedWord();
-                        // Show new suggestions if we have at least one. Otherwise keep the old
-                        // suggestions with the new typed word. Exception: if the length of the
-                        // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                        if (suggestedWords.size() > 1 || typedWord.length() <= 1) {
-                            holder.set(suggestedWords);
-                        } else {
-                            holder.set(retrieveOlderSuggestions(typedWord, mSuggestedWords));
-                        }
+                        holder.set(suggestedWords);
                     }
                 }
         );

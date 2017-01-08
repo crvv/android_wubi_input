@@ -1389,7 +1389,7 @@ public class WubiIME extends InputMethodService implements KeyboardActionListene
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        final SuggestedWords neutralSuggestions =SuggestedWords.EMPTY;
+        final SuggestedWords neutralSuggestions = SuggestedWords.EMPTY;
         setSuggestedWords(neutralSuggestions);
     }
 
