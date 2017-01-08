@@ -776,25 +776,55 @@ public final class InputLogic {
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
+        final boolean shouldAvoidSendingCode = (codePoint == Constants.CODE_SPACE || codePoint == Constants.CODE_ENTER) && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         }
-        if (codePoint == Constants.CODE_SPACE) {
-            commitFirstSuggestedWord(settingsValues, StringUtils.newSingleCodePointString(codePoint));
-        }
-        if (codePoint == Constants.CODE_ENTER) {
+        // isComposingWord() may have changed since we stored wasComposing
+        if (mWordComposer.isComposingWord()) {
             commitTyped(settingsValues, StringUtils.newSingleCodePointString(codePoint));
         }
 
-        if (codePoint == Constants.CODE_SPACE || codePoint == Constants.CODE_ENTER) {
+        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event, inputTransaction);
+
+        final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
+                && mConnection.isInsideDoubleQuoteOrAfterDigit();
+
+        if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
+            mSpaceState = SpaceState.SWAP_PUNCTUATION;
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+        } else if (Constants.CODE_SPACE == codePoint) {
+            mSpaceState = SpaceState.WEAK;
+
             if (wasComposingWord || mSuggestedWords.isEmpty()) {
                 inputTransaction.setRequiresUpdateSuggestions();
             }
-        }
-        else {
+
+            if (!shouldAvoidSendingCode) {
+                sendKeyCodePoint(settingsValues, codePoint);
+            }
+        } else {
+            if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
+                    && settingsValues.isUsuallyFollowedBySpace(codePoint))
+                    || (Constants.CODE_DOUBLE_QUOTE == codePoint
+                            && isInsideDoubleQuoteOrAfterDigit)) {
+                // If we are in phantom space state, and the user presses a separator, we want to
+                // stay in phantom space state so that the next keypress has a chance to add the
+                // space. For example, if I type "Good dat", pick "day" from the suggestion strip
+                // then insert a comma and go on to typing the next word, I want the space to be
+                // inserted automatically before the next word, the same way it is when I don't
+                // input the comma. A double quote behaves like it's usually followed by space if
+                // we're inside a double quote.
+                // The case is a little different if the separator is a space stripper. Such a
+                // separator does not normally need a space on the right (that's the difference
+                // between swappers and strippers), so we should not stay in phantom space state if
+                // the separator is a stripper. Hence the additional test above.
+                mSpaceState = SpaceState.PHANTOM;
+            }
+
             sendKeyCodePoint(settingsValues, codePoint);
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
