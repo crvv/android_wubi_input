@@ -55,16 +55,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ViewGroup mSuggestionsStrip;
     MainKeyboardView mMainKeyboardView;
 
-    private final View mMoreSuggestionsContainer;
-    private final MoreSuggestionsView mMoreSuggestionsView;
-    private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
-
     private final ArrayList<TextView> mWordViews = new ArrayList<>();
     private final ArrayList<View> mDividerViews = new ArrayList<>();
 
     Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    private int mStartIndexOfMoreSuggestions;
 
     private final SuggestionStripLayoutHelper mLayoutHelper;
     private final StripVisibilityGroup mStripVisibilityGroup;
@@ -102,8 +97,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     /**
      * Construct a {@link SuggestionStripView} for showing suggestions to be picked by the user.
-     * @param context
-     * @param attrs
      */
     public SuggestionStripView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.suggestionStripViewStyle);
