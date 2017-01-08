@@ -170,11 +170,9 @@ final class SuggestionStripLayoutHelper {
 
         int x = 0, i = 0;
         for (TextView wordView: mWordViews) {
-            if (i != 0) {
-                final View divider = mDividerViews.get(i);
-                addDivider(stripView, divider);
-                x += divider.getMeasuredWidth();
-            }
+            final View divider = mDividerViews.get(i);
+            addDivider(stripView, divider);
+            x += divider.getMeasuredWidth();
             wordView.measure(0, 0);
             x += wordView.getMeasuredWidth();
             if (x >= stripWidth) {
