@@ -33,13 +33,4 @@
         android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,SupportTouchPositionCorrection,EmojiCapable"
         android:isAsciiCapable="false" />
 
-    <subtype
-        android:icon="@drawable/ic_ime_switcher_dark"
-        android:label="@string/subtype_no_language_qwerty"
-        android:subtypeId="200"
-        android:imeSubtypeLocale="zz"
-        android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable"
-        android:isAsciiCapable="true" />
-
 </input-method>
