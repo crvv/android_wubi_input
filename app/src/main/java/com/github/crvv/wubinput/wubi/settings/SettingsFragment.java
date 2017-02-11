@@ -17,28 +17,17 @@
 package com.github.crvv.wubinput.wubi.settings;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
 import com.github.crvv.wubinput.wubi.R;
 import com.github.crvv.wubinput.wubi.utils.ApplicationUtils;
-import com.github.crvv.wubinput.wubi.utils.FeedbackUtils;
 import com.github.crvv.wubinput.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment {
-    // We don't care about menu grouping.
-    private static final int NO_MENU_GROUP = Menu.NONE;
-    // The first menu item id and order.
-    private static final int MENU_ABOUT = Menu.FIRST;
-    // The second menu item id and order.
-    private static final int MENU_HELP_AND_FEEDBACK = Menu.FIRST + 1;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -48,38 +37,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         setSubtypeEnablerTitle(R.string.select_language);
         addPreferencesFromResource(R.xml.prefs);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        preferenceScreen.setTitle(
-                ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
+        preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
     }
 
-    @Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        if (FeedbackUtils.isHelpAndFeedbackFormSupported()) {
-            menu.add(NO_MENU_GROUP, MENU_HELP_AND_FEEDBACK /* itemId */,
-                    MENU_HELP_AND_FEEDBACK /* order */, R.string.help_and_feedback);
-        }
-        final int aboutResId = FeedbackUtils.getAboutKeyboardTitleResId();
-        if (aboutResId != 0) {
-            menu.add(NO_MENU_GROUP, MENU_ABOUT /* itemId */, MENU_ABOUT /* order */, aboutResId);
-        }
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        final int itemId = item.getItemId();
-        if (itemId == MENU_HELP_AND_FEEDBACK) {
-            FeedbackUtils.showHelpAndFeedbackForm(getActivity());
-            return true;
-        }
-        if (itemId == MENU_ABOUT) {
-            final Intent aboutIntent = FeedbackUtils.getAboutKeyboardIntent(getActivity());
-            if (aboutIntent != null) {
-                startActivity(aboutIntent);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference){
         if(preference.getTitle().equals(getResources().getString(R.string.prefs_pick_ime))){

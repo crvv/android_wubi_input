@@ -16,10 +16,7 @@
 
 package com.github.crvv.wubinput.wubi.settings;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.github.crvv.wubinput.inputmethodcommon.InputMethodSettingsFragment;
 
 /**
  * Utility class for managing additional features settings.
@@ -29,11 +26,6 @@ public class AdditionalFeaturesSettingUtils {
 
     private AdditionalFeaturesSettingUtils() {
         // This utility class is not publicly instantiable.
-    }
-
-    public static void addAdditionalFeaturesPreferences(
-            final Context context, final InputMethodSettingsFragment settingsFragment) {
-        // do nothing.
     }
 
     public static void readAdditionalFeaturesPreferencesIntoArray(

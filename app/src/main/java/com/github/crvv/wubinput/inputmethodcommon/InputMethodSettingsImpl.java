@@ -29,10 +29,8 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.List;
 
-/* package private */ class InputMethodSettingsImpl implements InputMethodSettingsInterface {
+class InputMethodSettingsImpl implements InputMethodSettingsInterface {
     private Preference mSubtypeEnablerPreference;
-    private int mInputMethodSettingsCategoryTitleRes;
-    private CharSequence mInputMethodSettingsCategoryTitle;
     private int mSubtypeEnablerTitleRes;
     private CharSequence mSubtypeEnablerTitle;
     private int mSubtypeEnablerIconRes;
@@ -96,7 +94,6 @@ import java.util.List;
      */
     @Override
     public void setInputMethodSettingsCategoryTitle(int resId) {
-        mInputMethodSettingsCategoryTitleRes = resId;
         updateSubtypeEnabler();
     }
 
@@ -105,8 +102,6 @@ import java.util.List;
      */
     @Override
     public void setInputMethodSettingsCategoryTitle(CharSequence title) {
-        mInputMethodSettingsCategoryTitleRes = 0;
-        mInputMethodSettingsCategoryTitle = title;
         updateSubtypeEnabler();
     }
 

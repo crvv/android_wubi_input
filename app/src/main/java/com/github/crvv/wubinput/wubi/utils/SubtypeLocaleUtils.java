@@ -304,24 +304,8 @@ public final class SubtypeLocaleUtils {
         return keyboardLayoutSet;
     }
 
-    // TODO: Get this information from the framework instead of maintaining here by ourselves.
-    // Sorted list of known Right-To-Left language codes.
-    private static final String[] SORTED_RTL_LANGUAGES = {
-        "ar", // Arabic
-        "fa", // Persian
-        "iw", // Hebrew
-    };
-    static {
-        Arrays.sort(SORTED_RTL_LANGUAGES);
-    }
-
-    public static boolean isRtlLanguage(final Locale locale) {
-        final String language = locale.getLanguage();
-        return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
-    }
-
     public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
-        return isRtlLanguage(getSubtypeLocale(subtype));
+        return false;
     }
 
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
