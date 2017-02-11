@@ -28,7 +28,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.github.crvv.wubinput.wubi.Constants;
 import com.github.crvv.wubinput.wubi.R;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -42,7 +41,6 @@ public final class SubtypeLocaleUtils {
     public static final String NO_LANGUAGE = "zz";
     public static final String QWERTY = "qwerty";
     public static final String EMOJI = "emoji";
-    public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
 
     private static volatile boolean sInitialized = false;
     private static final Object sInitializeLock = new Object();
@@ -129,28 +127,8 @@ public final class SubtypeLocaleUtils {
         }
     }
 
-    public static String[] getPredefinedKeyboardLayoutSet() {
-        return sPredefinedKeyboardLayoutSet;
-    }
-
-    public static boolean isExceptionalLocale(final String localeString) {
-        return sExceptionalLocaleToNameIdsMap.containsKey(localeString);
-    }
-
     private static String getNoLanguageLayoutKey(final String keyboardLayoutName) {
         return NO_LANGUAGE + "_" + keyboardLayoutName;
-    }
-
-    public static int getSubtypeNameId(final String localeString, final String keyboardLayoutName) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                && isExceptionalLocale(localeString)) {
-            return sExceptionalLocaleToWithLayoutNameIdsMap.get(localeString);
-        }
-        final String key = NO_LANGUAGE.equals(localeString)
-                ? getNoLanguageLayoutKey(keyboardLayoutName)
-                : keyboardLayoutName;
-        final Integer nameId = sKeyboardLayoutToNameIdsMap.get(key);
-        return nameId == null ? UNKNOWN_KEYBOARD_LAYOUT : nameId;
     }
 
     private static Locale getDisplayLocaleOfSubtypeLocale(final String localeString) {
@@ -158,11 +136,6 @@ public final class SubtypeLocaleUtils {
             return sResources.getConfiguration().locale;
         }
         return LocaleUtils.constructLocaleFromString(localeString);
-    }
-
-    public static String getSubtypeLocaleDisplayNameInSystemLocale(final String localeString) {
-        final Locale displayLocale = sResources.getConfiguration().locale;
-        return getSubtypeLocaleDisplayNameInternal(localeString, displayLocale);
     }
 
     public static String getSubtypeLocaleDisplayName(final String localeString) {
@@ -302,10 +275,6 @@ public final class SubtypeLocaleUtils {
             return QWERTY;
         }
         return keyboardLayoutSet;
-    }
-
-    public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
-        return false;
     }
 
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
