@@ -19,18 +19,14 @@ package com.github.crvv.wubinput.wubi;
 import static com.github.crvv.wubinput.wubi.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.github.crvv.wubinput.compat.InputMethodManagerCompatWrapper;
-import com.github.crvv.wubinput.wubi.settings.Settings;
-import com.github.crvv.wubinput.wubi.utils.AdditionalSubtypeUtils;
 import com.github.crvv.wubinput.wubi.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;

@@ -18,7 +18,6 @@ package com.github.crvv.wubinput.wubi.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
@@ -29,14 +28,10 @@ import com.github.crvv.wubinput.compat.BuildCompatUtils;
 import com.github.crvv.wubinput.wubi.AudioAndHapticFeedbackManager;
 import com.github.crvv.wubinput.wubi.InputAttributes;
 import com.github.crvv.wubinput.wubi.R;
-import com.github.crvv.wubinput.wubi.utils.AdditionalSubtypeUtils;
 import com.github.crvv.wubinput.wubi.utils.ResourceUtils;
 import com.github.crvv.wubinput.wubi.utils.RunInLocale;
-import com.github.crvv.wubinput.wubi.utils.StringUtils;
 
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
