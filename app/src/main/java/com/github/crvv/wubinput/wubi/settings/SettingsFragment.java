@@ -40,7 +40,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
     }
 
-
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference){
         if(preference.getTitle().equals(getResources().getString(R.string.prefs_pick_ime))){
